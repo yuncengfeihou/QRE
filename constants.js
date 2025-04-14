@@ -47,3 +47,21 @@ export const ICON_CLASS_MAP = {
     [ICON_TYPES.BOLT]: 'fa-bolt',
     [ICON_TYPES.CUSTOM]: ''  // 自定义图标不使用FontAwesome类
 };
+
+// 新增常量用于菜单样式功能
+export const ID_MENU_STYLE_BUTTON = `${EXTENSION_NAME}-menu-style-button`;
+export const ID_MENU_STYLE_PANEL = `${EXTENSION_NAME}-menu-style-panel`;
+export const ID_FOLLOW_THEME_CHECKBOX = `${EXTENSION_NAME}-follow-theme`;
+export const ID_RESET_STYLE_BUTTON = `${EXTENSION_NAME}-reset-style`;
+
+// 默认菜单样式值
+export const DEFAULT_MENU_STYLES = {
+    itemBgColor: 'rgba(60, 60, 60, 0.7)',
+    itemTextColor: '#ffffff',
+    titleColor: '#cccccc',
+    titleBorderColor: '#444444',
+    emptyTextColor: '#666666',
+    menuBgColor: 'rgba(0, 0, 0, 0.85)',
+    menuBorderColor: '#555555',
+    followTheme: false
+};
