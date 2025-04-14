@@ -171,3 +171,37 @@
     background-position: center;
     background-repeat: no-repeat;
 }
+
+/* 菜单样式设置面板 */
+.quick-reply-style-group {
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #333;
+}
+
+.quick-reply-style-group h4 {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #ccc;
+}
+
+.qr-color-picker {
+    width: 40px;
+    height: 25px;
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.qr-opacity-slider {
+    width: 100px;
+    margin: 0 10px;
+}
+
+#qr-menu-style-preview {
+    margin-top: 15px;
+    border: 1px dashed #444;
+    padding: 10px;
+    border-radius: 5px;
+}
