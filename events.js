@@ -76,4 +76,39 @@ export function setupEventListeners() {
     iconTypeDropdown?.addEventListener('change', handleSettingsChange);
     customIconUrl?.addEventListener('input', handleSettingsChange);
     colorMatchCheckbox?.addEventListener('change', handleSettingsChange);
+    
+    // 添加菜单样式按钮监听器
+    const menuStyleButton = document.getElementById(Constants.ID_MENU_STYLE_BUTTON);
+    menuStyleButton?.addEventListener('click', handleMenuStyleButtonClick);
+    
+    // 添加菜单样式面板相关监听器
+    const closeButton = document.getElementById(`${Constants.ID_MENU_STYLE_PANEL}-close`);
+    closeButton?.addEventListener('click', closeMenuStylePanel);
+    
+    const applyButton = document.getElementById(`${Constants.ID_MENU_STYLE_PANEL}-apply`);
+    applyButton?.addEventListener('click', applyMenuStyles);
+    
+    const resetButton = document.getElementById(Constants.ID_RESET_STYLE_BUTTON);
+    resetButton?.addEventListener('click', resetMenuStyles);
+    
+    // 添加不透明度滑块变化监听器
+    const itemOpacitySlider = document.getElementById('qr-item-opacity');
+    itemOpacitySlider?.addEventListener('input', function() {
+        document.getElementById('qr-item-opacity-value').textContent = this.value;
+    });
+    
+    const menuOpacitySlider = document.getElementById('qr-menu-opacity');
+    menuOpacitySlider?.addEventListener('input', function() {
+        document.getElementById('qr-menu-opacity-value').textContent = this.value;
+    });
+    
+    // 跟随主题复选框监听器
+    const followThemeCheckbox = document.getElementById(Constants.ID_FOLLOW_THEME_CHECKBOX);
+    followThemeCheckbox?.addEventListener('change', function() {
+        // 禁用或启用颜色选择控件
+        const colorPickers = document.querySelectorAll('.qr-color-picker, .qr-opacity-slider');
+        colorPickers.forEach(picker => {
+            picker.disabled = this.checked;
+        });
+    });
 }
