@@ -3,7 +3,7 @@ import * as Constants from './constants.js';
 import { sharedState } from './state.js';
 import { createMenuElement } from './ui.js';
 import { createSettingsHtml } from './settings.js';
-import { setupEventListeners, handleQuickReplyClick } from './events.js';
+import { setupEventListeners, handleQuickReplyClick, updateMenuStylesUI } from './events.js';
 
 // 创建本地设置对象，如果全局对象不存在
 if (typeof window.extension_settings === 'undefined') {
@@ -197,7 +197,7 @@ function initializePlugin() {
 
         // Create and inject the rocket button
         const rocketButton = injectRocketButton();
-        
+
         // Create menu element
         const menu = createMenuElement();
 
@@ -221,25 +221,30 @@ function initializePlugin() {
                 const iconTypeDropdown = document.getElementById(Constants.ID_ICON_TYPE_DROPDOWN);
                 const customIconUrl = document.getElementById(Constants.ID_CUSTOM_ICON_URL);
                 const colorMatchCheckbox = document.getElementById(Constants.ID_COLOR_MATCH_CHECKBOX);
-                
+
                 if (enabledDropdown) settings.enabled = enabledDropdown.value === 'true';
                 if (iconTypeDropdown) settings.iconType = iconTypeDropdown.value;
                 if (customIconUrl) settings.customIconUrl = customIconUrl.value;
                 if (colorMatchCheckbox) settings.matchButtonColors = colorMatchCheckbox.checked;
-                
+
                 // 更新图标
                 updateIconDisplay();
-                
+
                 // 更新图标预览
                 updateIconPreview(settings.iconType);
-                
+
+                // 更新菜单样式
+                if (typeof updateMenuStylesUI === 'function' && settings.menuStyles) {
+                    updateMenuStylesUI();
+                }
+
                 // 尝试保存到 localStorage 作为备份
                 try {
                     localStorage.setItem('QRA_settings', JSON.stringify(settings));
                 } catch(e) {
                     console.error('保存到localStorage失败:', e);
                 }
-                
+
                 // 尝试使用 context API 保存
                 if (typeof context !== 'undefined' && context.saveExtensionSettings) {
                     try {
@@ -251,7 +256,7 @@ function initializePlugin() {
                 } else {
                     console.warn('context.saveExtensionSettings 不可用');
                 }
-                
+
                 // 显示保存成功的反馈
                 const saveStatus = document.getElementById('qr-save-status');
                 if (saveStatus) {
@@ -260,7 +265,7 @@ function initializePlugin() {
                         saveStatus.textContent = '';
                     }, 2000);
                 }
-                
+
                 const saveButton = document.getElementById('qr-save-settings');
                 if (saveButton) {
                     const originalText = saveButton.innerHTML;
@@ -271,7 +276,7 @@ function initializePlugin() {
                         saveButton.style.backgroundColor = '';
                     }, 2000);
                 }
-                
+
                 return true;
             }
         };
@@ -303,25 +308,25 @@ function setupFileUploadListener() {
         fileInput.addEventListener('change', (event) => {
             const file = event.target.files[0];
             if (!file) return;
-            
+
             const reader = new FileReader();
             reader.onload = function(e) {
                 const customIconUrl = document.getElementById(Constants.ID_CUSTOM_ICON_URL);
                 if (customIconUrl) {
                     customIconUrl.value = e.target.result; // 将文件转为base64
-                    
+
                     // 更新设置
                     const settings = extension_settings[Constants.EXTENSION_NAME];
                     settings.customIconUrl = e.target.result;
-                    
+
                     // 更新预览
                     if (settings.iconType === Constants.ICON_TYPES.CUSTOM) {
                         updateIconPreview(Constants.ICON_TYPES.CUSTOM);
                     }
-                    
+
                     // 更新图标显示
                     updateIconDisplay();
-                    
+
                     // 保存设置
                     if (typeof context !== 'undefined' && context.saveExtensionSettings) {
                         context.saveExtensionSettings();
@@ -332,7 +337,7 @@ function setupFileUploadListener() {
             };
             reader.readAsDataURL(file);
         });
-        
+
         console.log(`[${Constants.EXTENSION_NAME}] File upload listener set up`);
     } else {
         console.warn(`[${Constants.EXTENSION_NAME}] File upload input not found`);
@@ -344,30 +349,30 @@ function setupFileUploadListener() {
  */
 function loadAndApplySettings() {
     const settings = window.extension_settings[Constants.EXTENSION_NAME];
-    
+
     // 更新UI元素
     const dropdown = document.getElementById(Constants.ID_SETTINGS_ENABLED_DROPDOWN);
     if (dropdown) dropdown.value = String(settings.enabled);
-    
+
     const iconType = document.getElementById(Constants.ID_ICON_TYPE_DROPDOWN);
     if (iconType) iconType.value = settings.iconType || Constants.ICON_TYPES.ROCKET;
-    
+
     const customUrl = document.getElementById(Constants.ID_CUSTOM_ICON_URL);
     if (customUrl) customUrl.value = settings.customIconUrl || '';
-    
+
     const colorMatch = document.getElementById(Constants.ID_COLOR_MATCH_CHECKBOX);
     if (colorMatch) colorMatch.checked = settings.matchButtonColors !== false;
-    
+
     // 显示/隐藏自定义URL输入框
     const customContainer = document.querySelector('.custom-icon-container');
     if (customContainer) {
-        customContainer.style.display = 
+        customContainer.style.display =
             settings.iconType === Constants.ICON_TYPES.CUSTOM ? 'flex' : 'none';
     }
-    
+
     // 更新图标预览
     updateIconPreview(settings.iconType);
-    
+
     // 如果禁用则隐藏按钮
     if (settings.enabled === false && sharedState.domElements.rocketButton) {
         sharedState.domElements.rocketButton.style.display = 'none';
@@ -375,6 +380,14 @@ function loadAndApplySettings() {
 
     // 更新图标显示
     updateIconDisplay();
+
+    // 应用菜单样式设置
+    if (typeof updateMenuStylesUI === 'function' && settings.menuStyles) {
+        updateMenuStylesUI();
+    } else if (!settings.menuStyles) {
+        // 如果没有定义菜单样式，设置默认值
+        settings.menuStyles = JSON.parse(JSON.stringify(Constants.DEFAULT_MENU_STYLES));
+    }
 }
 
 // 确保 jQuery 可用 - 使用原生 js 备用
@@ -394,11 +407,11 @@ function loadSettingsFromLocalStorage() {
         const savedSettings = localStorage.getItem('QRA_settings');
         if (savedSettings) {
             const parsedSettings = JSON.parse(savedSettings);
-            
+
             // 将保存的设置合并到当前设置
             const currentSettings = extension_settings[Constants.EXTENSION_NAME];
             Object.assign(currentSettings, parsedSettings);
-            
+
             console.log('从localStorage加载了设置:', currentSettings);
             return true;
         }
@@ -419,13 +432,13 @@ onReady(() => {
             div.style.display = 'none';
             document.body.appendChild(div);
         }
-        
+
         // 尝试从localStorage加载设置
         loadSettingsFromLocalStorage();
-        
+
         // 添加设置面板内容
         document.getElementById('extensions_settings').innerHTML += createSettingsHtml();
-        
+
         // 初始化插件
         initializePlugin();
     } catch (err) {
