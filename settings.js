@@ -145,6 +145,9 @@ export function createSettingsHtml() {
                 </div>
                 
                 <div class="${Constants.CLASS_SETTINGS_ROW}" style="justify-content: flex-end; margin-top: 15px;">
+                    <button id="${Constants.ID_MENU_STYLE_BUTTON}" class="menu_button" style="margin-right: 10px;">
+                        <i class="fa-solid fa-palette"></i> 菜单样式
+                    </button>
                     <button id="qr-save-settings" class="menu_button" onclick="window.quickReplyMenu.saveSettings()">
                         <i class="fa-solid fa-floppy-disk"></i> 保存设置
                     </button>
