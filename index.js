@@ -14,7 +14,9 @@ if (!window.extension_settings[Constants.EXTENSION_NAME]) {
         enabled: true,
         iconType: Constants.ICON_TYPES.ROCKET,
         customIconUrl: '',
-        matchButtonColors: true
+        matchButtonColors: true,
+        // 添加默认菜单样式
+        menuStyles: JSON.parse(JSON.stringify(Constants.DEFAULT_MENU_STYLES))
     };
 }
 
