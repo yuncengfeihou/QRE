@@ -3,6 +3,7 @@ import { extension_settings } from "./index.js";
 import * as Constants from './constants.js';
 import { sharedState, setMenuVisible } from './state.js';
 import { updateMenuVisibilityUI } from './ui.js';
+import { updateMenuStylesUI } from './events.js';
 
 // 在settings.js中添加自己的updateIconDisplay实现，避免循环依赖
 function updateIconDisplay() {
@@ -91,6 +92,83 @@ function updateIconDisplay() {
  * @returns {string} HTML string for the settings.
  */
 export function createSettingsHtml() {
+    // 菜单样式设置面板
+    const stylePanel = `
+    <div id="${Constants.ID_MENU_STYLE_PANEL}" style="display:none; position:fixed; left:50%; top:50%; transform:translate(-50%, -50%); 
+        z-index:1002; background-color:#0f0f0f; border:1px solid #444; border-radius:10px; padding:20px; width:500px; max-width:90vw;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+            <h3 style="margin:0">菜单样式设置</h3>
+            <button class="menu_button" id="${Constants.ID_MENU_STYLE_PANEL}-close" style="padding:0 10px;">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="quick-reply-style-group">
+            <h4>菜单项样式</h4>
+            <div class="quick-reply-settings-row">
+                <label>菜单项背景:</label>
+                <input type="color" id="qr-item-bgcolor-picker" class="qr-color-picker">
+                <input type="range" id="qr-item-opacity" min="0" max="1" step="0.1" value="0.7" class="qr-opacity-slider">
+                <span id="qr-item-opacity-value">0.7</span>
+            </div>
+            <div class="quick-reply-settings-row">
+                <label>菜单项文字:</label>
+                <input type="color" id="qr-item-color-picker" class="qr-color-picker">
+            </div>
+        </div>
+        
+        <div class="quick-reply-style-group">
+            <h4>标题样式</h4>
+            <div class="quick-reply-settings-row">
+                <label>标题文字:</label>
+                <input type="color" id="qr-title-color-picker" class="qr-color-picker">
+            </div>
+            <div class="quick-reply-settings-row">
+                <label>分割线:</label>
+                <input type="color" id="qr-title-border-picker" class="qr-color-picker">
+            </div>
+        </div>
+        
+        <div class="quick-reply-style-group">
+            <h4>空提示样式</h4>
+            <div class="quick-reply-settings-row">
+                <label>提示文字:</label>
+                <input type="color" id="qr-empty-color-picker" class="qr-color-picker">
+            </div>
+        </div>
+        
+        <div class="quick-reply-style-group">
+            <h4>菜单面板样式</h4>
+            <div class="quick-reply-settings-row">
+                <label>菜单背景:</label>
+                <input type="color" id="qr-menu-bgcolor-picker" class="qr-color-picker">
+                <input type="range" id="qr-menu-opacity" min="0" max="1" step="0.1" value="0.85" class="qr-opacity-slider">
+                <span id="qr-menu-opacity-value">0.85</span>
+            </div>
+            <div class="quick-reply-settings-row">
+                <label>菜单边框:</label>
+                <input type="color" id="qr-menu-border-picker" class="qr-color-picker">
+            </div>
+        </div>
+        
+        <div class="quick-reply-settings-row" style="margin-top:15px;">
+            <label>
+                <input type="checkbox" id="${Constants.ID_FOLLOW_THEME_CHECKBOX}"> 
+                跟随主题样式
+            </label>
+        </div>
+        
+        <div style="display:flex; justify-content:space-between; margin-top:20px;">
+            <button class="menu_button" id="${Constants.ID_RESET_STYLE_BUTTON}">
+                <i class="fa-solid fa-rotate-left"></i> 恢复默认
+            </button>
+            <button class="menu_button" id="${Constants.ID_MENU_STYLE_PANEL}-apply">
+                <i class="fa-solid fa-check"></i> 应用样式
+            </button>
+        </div>
+    </div>
+    `;
+
     return `
     <div id="${Constants.ID_SETTINGS_CONTAINER}" class="extension-settings">
         <div class="inline-drawer">
@@ -157,7 +235,8 @@ export function createSettingsHtml() {
                 <div id="qr-save-status" style="text-align: center; color: #4caf50; height: 20px; margin-top: 5px;"></div>
             </div>
         </div>
-    </div>`;
+    </div>
+    ${stylePanel}`;
 }
 
 /**
@@ -346,6 +425,7 @@ function saveSettings() {
         return true;
     }
 }
+
 /**
  * 设置事件监听器
  */
@@ -368,6 +448,11 @@ export function setupSettingsEventListeners() {
                 updateIconPreview(Constants.ICON_TYPES.CUSTOM);
             }
             updateIconDisplay();
+            
+            // 更新菜单样式
+            if (typeof updateMenuStylesUI === 'function') {
+                updateMenuStylesUI();
+            }
             
             // 显示保存成功的临时提示
             saveButton.innerHTML = '<i class="fa-solid fa-check"></i> 已保存';
@@ -436,6 +521,14 @@ export function loadAndApplySettings() {
 
     // 更新图标显示
     updateIconDisplay();
+    
+    // 应用菜单样式
+    if (typeof updateMenuStylesUI === 'function' && settings.menuStyles) {
+        updateMenuStylesUI();
+    } else if (!settings.menuStyles) {
+        // 如果没有样式设置，则创建默认值
+        settings.menuStyles = JSON.parse(JSON.stringify(Constants.DEFAULT_MENU_STYLES));
+    }
 
     console.log(`[${Constants.EXTENSION_NAME}] Settings loaded and applied.`);
 }
