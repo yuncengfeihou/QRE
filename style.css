@@ -6,25 +6,25 @@
 
 /* --- 快捷回复按钮 --- */
 #quick-reply-rocket-button {
-    color: var(--button-text-color, #a0a0a0); /* 使用变量或默认为灰色 */
-    font-size: 1.2em; /* 图标大小 */
-    line-height: var(--buttons-bar-height); /* 行高与按钮栏一致 */
-    height: var(--buttons-bar-height);      /* 高度与按钮栏一致 */
-    display: flex;         /* 使用 Flexbox 布局 */
-    align-items: center;   /* 垂直居中图标 */
-    justify-content: center; /* 水平居中 */
-    margin-right: 4px;     /* 右边距 */
-    cursor: pointer;       /* 鼠标样式：手型 */
-    transition: all 0.2s;  /* 过渡效果 */
-    width: 32px;          /* 固定宽度 */
+    color: var(--button-text-color, #a0a0a0);
+    font-size: 1.2em;
+    line-height: var(--buttons-bar-height);
+    height: var(--buttons-bar-height);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 32px;
 }
 
 #quick-reply-rocket-button:hover {
-    color: var(--button-text-hover-color, #ffffff); /* 使用变量或默认为白色 */
+    color: var(--button-text-hover-color, #ffffff);
 }
 
 #quick-reply-rocket-button.active {
-    color: var(--button-text-active-color, #55aaff); /* 使用变量或默认为蓝色 */
+    color: var(--button-text-active-color, #55aaff);
 }
 
 /* 快速回复菜单容器 */
@@ -51,6 +51,7 @@
     align-items: center;
     margin: 10px 0;
     gap: 10px;
+    flex-wrap: nowrap;
 }
 
 .quick-reply-settings-row label {
@@ -190,18 +191,6 @@
     color: var(--text-color, #fff);
 }
 
-/* 菜单样式面板标题样式 */
-#quick-reply-menu-menu-style-panel h3 {
-    margin: 0;
-    color: var(--text-color);
-}
-
-/* 统一菜单样式标题和设置选项文字样式 */
-.quick-reply-style-group h4,
-.quick-reply-settings-row label {
-    color: var(--text-color);
-}
-
 .quick-reply-style-group {
     margin-bottom: 15px;
     padding-bottom: 10px;
@@ -211,15 +200,10 @@
 .quick-reply-style-group h4 {
     margin: 5px 0;
     font-size: 14px;
+    color: var(--text-color, #ccc);
 }
 
-/* 颜色选择器增强样式 */
-.qr-color-picker-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
+/* 颜色选择器样式优化 */
 .qr-color-picker {
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -227,12 +211,36 @@
     width: 40px;
     height: 25px;
     padding: 0;
-    border: 1px solid var(--border-color, #444);
+    border: none;
     border-radius: 4px;
     cursor: pointer;
     background: none;
 }
 
+/* 确保颜色选择器在所有浏览器中都没有边框和轮廓 */
+.qr-color-picker::-webkit-color-swatch-wrapper {
+    padding: 0;
+    border: none;
+}
+
+.qr-color-picker::-webkit-color-swatch {
+    border: none;
+    border-radius: 4px;
+}
+
+.qr-color-picker::-moz-color-swatch {
+    border: none;
+    border-radius: 4px;
+}
+
+/* 颜色选择器包装器 */
+.qr-color-picker-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* 颜色文本输入框 */
 .qr-color-text-input {
     width: 80px;
     height: 25px;
@@ -244,12 +252,30 @@
     font-family: monospace;
 }
 
-.qr-opacity-slider {
-    width: 100px;
-    margin: 0 10px;
+/* 滑动条容器样式 */
+.opacity-slider-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
 }
 
-/* 移动设备适配 */
+/* 滑动条样式优化 */
+.qr-opacity-slider {
+    flex: 1;
+    min-width: 60px;
+    margin: 0;
+}
+
+/* 数值显示样式 */
+.opacity-value {
+    min-width: 30px;
+    text-align: right;
+}
+
+/* 确保在小屏幕设备上正确显示 */
 @media screen and (max-width: 768px) {
     .qr-color-picker-wrapper {
         flex-wrap: wrap;
@@ -257,19 +283,6 @@
     
     .qr-color-text-input {
         width: 70px;
-    }
-    
-    .quick-reply-settings-row {
-        flex-wrap: wrap;
-    }
-    
-    .quick-reply-settings-row label {
-        width: 100%;
-        min-width: unset;
-    }
-    
-    .qr-opacity-slider {
-        width: calc(100% - 130px);
     }
 }
 
