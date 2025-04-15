@@ -184,6 +184,23 @@ export function createSettingsHtml() {
         </div>
     </div>
     `;
+    
+    // 使用说明面板
+    const usagePanel = `
+    <div id="quick-reply-menu-usage-panel" class="qr-usage-panel">
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+            <h3>使用说明</h3>
+            <button class="menu_button" id="quick-reply-menu-usage-panel-close" style="padding:0 10px;">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="quick-reply-usage-content">
+            <p>此插件隐藏了原有的快捷回复栏，并创建了一个新的快速回复菜单。</p>
+            <p>点击发送按钮旁边的图标可以打开或关闭菜单。</p>
+        </div>
+    </div>
+    `;
 
     return `
     <div id="${Constants.ID_SETTINGS_CONTAINER}" class="extension-settings">
@@ -193,15 +210,10 @@ export function createSettingsHtml() {
                 <div class="inline-drawer-icon fa-solid fa-circle-chevron-down"></div>
             </div>
             <div class="inline-drawer-content">
-                <div class="inline-drawer">
-                    <div class="inline-drawer-toggle inline-drawer-header">
-                        <b>使用说明</b>
-                        <div class="inline-drawer-icon fa-solid fa-circle-chevron-down"></div>
-                    </div>
-                    <div class="inline-drawer-content">
-                        <p>此插件隐藏了原有的快捷回复栏，并创建了一个新的快速回复菜单。</p>
-                        <p>点击发送按钮旁边的图标可以打开或关闭菜单。</p>
-                    </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                    <button id="quick-reply-menu-usage-button" class="menu_button">
+                        <i class="fa-solid fa-circle-info"></i> 使用说明
+                    </button>
                 </div>
                 
                 <div class="flex-container flexGap5">
@@ -215,7 +227,7 @@ export function createSettingsHtml() {
                 <hr class="sysHR">
                 <div class="flex-container flexGap5">
                     <label for="${Constants.ID_ICON_TYPE_DROPDOWN}">图标类型:</label>
-                    <select id="${Constants.ID_ICON_TYPE_DROPDOWN}" class="text_pole" style="width:120px;">
+                    <select id="${Constants.ID_ICON_TYPE_DROPDOWN}" class="text_pole transparent-select" style="width:120px;">
                         <option value="${Constants.ICON_TYPES.ROCKET}">火箭图标</option>
                         <option value="${Constants.ICON_TYPES.COMMENT}">对话图标</option>
                         <option value="${Constants.ICON_TYPES.STAR}">星星图标</option>
@@ -260,7 +272,7 @@ export function createSettingsHtml() {
                 <div id="qr-save-status" style="text-align: center; color: #4caf50; height: 20px; margin-top: 5px;"></div>
             </div>
         </div>
-    </div>${stylePanel}`;
+    </div>${stylePanel}${usagePanel}`;
 }
 
 /**
@@ -359,6 +371,26 @@ function handleFileUpload(event) {
     reader.readAsDataURL(file);
 }
 
+/**
+ * 处理使用说明按钮点击
+ */
+export function handleUsageButtonClick() {
+    const usagePanel = document.getElementById('quick-reply-menu-usage-panel');
+    if (usagePanel) {
+        usagePanel.style.display = 'block';
+    }
+}
+
+/**
+ * 关闭使用说明面板
+ */
+export function closeUsagePanel() {
+    const usagePanel = document.getElementById('quick-reply-menu-usage-panel');
+    if (usagePanel) {
+        usagePanel.style.display = 'none';
+    }
+}
+
 // 统一处理设置变更的函数
 export function handleSettingsChange(event) {
     const target = event.target;
@@ -449,10 +481,23 @@ function saveSettings() {
         return true;
     }
 }
+
 /**
  * 设置事件监听器
  */
 export function setupSettingsEventListeners() {
+    // 使用说明按钮监听器
+    const usageButton = document.getElementById('quick-reply-menu-usage-button');
+    if (usageButton) {
+        usageButton.addEventListener('click', handleUsageButtonClick);
+    }
+    
+    // 使用说明面板关闭按钮监听器
+    const usageCloseButton = document.getElementById('quick-reply-menu-usage-panel-close');
+    if (usageCloseButton) {
+        usageCloseButton.addEventListener('click', closeUsagePanel);
+    }
+    
     // 文件上传监听器
     const fileUpload = document.getElementById('icon-file-upload');
     if (fileUpload) {
