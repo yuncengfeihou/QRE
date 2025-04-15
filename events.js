@@ -3,7 +3,7 @@ import * as Constants from './constants.js';
 import { sharedState, setMenuVisible } from './state.js';
 import { updateMenuVisibilityUI } from './ui.js';
 import { triggerQuickReply } from './api.js';
-import { handleSettingsChange } from './settings.js';
+import { handleSettingsChange, handleUsageButtonClick, closeUsagePanel } from './settings.js';
 import { extension_settings } from './index.js';
 
 /**
@@ -328,6 +328,18 @@ export function setupEventListeners() {
     
     customIconUrl?.addEventListener('input', handleSettingsChange);
     colorMatchCheckbox?.addEventListener('change', handleSettingsChange);
+    
+    // 添加使用说明按钮监听器
+    const usageButton = document.getElementById(Constants.ID_USAGE_BUTTON);
+    if (usageButton) {
+        usageButton.addEventListener('click', handleUsageButtonClick);
+    }
+    
+    // 添加使用说明面板关闭按钮监听器
+    const usageCloseButton = document.getElementById(`${Constants.ID_USAGE_PANEL}-close`);
+    if (usageCloseButton) {
+        usageCloseButton.addEventListener('click', closeUsagePanel);
+    }
     
     // 添加菜单样式按钮监听器
     const menuStyleButton = document.getElementById(Constants.ID_MENU_STYLE_BUTTON);
