@@ -184,39 +184,7 @@
     color: var(--text-color, #ccc);
 }
 
-/* 去掉颜色选择器边框 */
-.qr-color-picker {
-    width: 40px;
-    height: 25px;
-    border: none;
-    background: none;
-    padding: 0;
-    cursor: pointer;
-}
-
-/* 防止滑动条和数值换行的容器 */
-.slider-container {
-    display: flex;
-    align-items: center;
-    flex-wrap: nowrap;
-    width: 150px; /* 限制宽度防止换行 */
-}
-
-/* 调整不透明度滑动条 */
-.qr-opacity-slider {
-    flex: 1;
-    min-width: 80px;
-    margin: 0 5px;
-}
-
-/* 调整不透明度数值显示 */
-.opacity-value {
-    min-width: 24px;
-    text-align: center;
-    white-space: nowrap;
-}
-
-/* 菜单样式面板主题相关样式 */
+/* 菜单样式设置面板 - 确保背景不透明 */
 #quick-reply-menu-menu-style-panel {
     display: none;
     position: fixed;
@@ -230,7 +198,7 @@
     max-width: 90vw;
     max-height: 80vh;
     overflow-y: auto;
-    /* 添加明确的背景色，使用变量或者回退值 */
+    /* 确保背景不透明 */
     background-color: var(--background-color1, #0f0f0f);
     border: 1px solid var(--border-color, #444);
     color: var(--text-color, #fff);
@@ -248,7 +216,58 @@
     color: var(--text-color, #fff);
 }
 
-/* 确保在小屏幕设备上仍然不换行 */
+/* 改进颜色选择器样式 - 去掉边框 */
+.qr-color-picker {
+    width: 40px;
+    height: 25px;
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+/* 颜色文本输入框 - 用于移动设备 */
+.qr-color-text-input {
+    width: 70px;
+    height: 25px;
+    padding: 0 5px;
+    border: 1px solid var(--border-color, #444);
+    border-radius: 4px;
+    background: var(--background-color2, #1f1f1f);
+    color: var(--text-color, #fff);
+    font-family: monospace;
+}
+
+/* 颜色选择器容器 */
+.color-picker-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* 滑动条容器 - 防止换行 */
+.slider-container {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    width: 150px;
+}
+
+/* 调整不透明度滑动条 */
+.qr-opacity-slider {
+    flex: 1;
+    min-width: 80px;
+    margin: 0 5px;
+}
+
+/* 不透明度数值 - 防止换行 */
+.opacity-value {
+    min-width: 24px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* 移动设备适配 */
 @media screen and (max-width: 768px) {
     .quick-reply-settings-row {
         flex-wrap: wrap;
@@ -259,8 +278,13 @@
         margin-bottom: 5px;
     }
     
-    .slider-container {
+    .color-picker-container, .slider-container {
         margin-left: 0;
+    }
+    
+    /* 确保滑动条容器不换行 */
+    .slider-container {
+        flex-wrap: nowrap;
     }
 }
 
