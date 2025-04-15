@@ -72,29 +72,37 @@ export function handleMenuStyleButtonClick() {
  */
 function loadMenuStylesIntoPanel() {
     const settings = extension_settings[Constants.EXTENSION_NAME];
+    // 确保menuStyles存在，否则使用默认值
     const styles = settings.menuStyles || JSON.parse(JSON.stringify(Constants.DEFAULT_MENU_STYLES));
     
-    // 设置各个控件的值
-    document.getElementById('qr-item-bgcolor-picker').value = rgbaToHex(styles.itemBgColor);
-    document.getElementById('qr-item-opacity').value = getOpacityFromRgba(styles.itemBgColor);
-    document.getElementById('qr-item-opacity-value').textContent = getOpacityFromRgba(styles.itemBgColor);
+    // 设置各个控件的值时添加检查
+    document.getElementById('qr-item-bgcolor-picker').value = 
+        styles.itemBgColor ? rgbaToHex(styles.itemBgColor) : '#3c3c3c';
+    document.getElementById('qr-item-opacity').value = 
+        styles.itemBgColor ? getOpacityFromRgba(styles.itemBgColor) : 0.7;
+    document.getElementById('qr-item-opacity-value').textContent = 
+        styles.itemBgColor ? getOpacityFromRgba(styles.itemBgColor) : 0.7;
     
-    document.getElementById('qr-item-color-picker').value = styles.itemTextColor;
-    document.getElementById('qr-title-color-picker').value = styles.titleColor;
-    document.getElementById('qr-title-border-picker').value = styles.titleBorderColor;
-    document.getElementById('qr-empty-color-picker').value = styles.emptyTextColor;
+    document.getElementById('qr-item-color-picker').value = styles.itemTextColor || '#ffffff';
+    document.getElementById('qr-title-color-picker').value = styles.titleColor || '#cccccc';
+    document.getElementById('qr-title-border-picker').value = styles.titleBorderColor || '#444444';
+    document.getElementById('qr-empty-color-picker').value = styles.emptyTextColor || '#666666';
     
-    document.getElementById('qr-menu-bgcolor-picker').value = rgbaToHex(styles.menuBgColor);
-    document.getElementById('qr-menu-opacity').value = getOpacityFromRgba(styles.menuBgColor);
-    document.getElementById('qr-menu-opacity-value').textContent = getOpacityFromRgba(styles.menuBgColor);
+    document.getElementById('qr-menu-bgcolor-picker').value = 
+        styles.menuBgColor ? rgbaToHex(styles.menuBgColor) : '#000000';
+    document.getElementById('qr-menu-opacity').value = 
+        styles.menuBgColor ? getOpacityFromRgba(styles.menuBgColor) : 0.85;
+    document.getElementById('qr-menu-opacity-value').textContent = 
+        styles.menuBgColor ? getOpacityFromRgba(styles.menuBgColor) : 0.85;
     
-    document.getElementById('qr-menu-border-picker').value = styles.menuBorderColor;
-    document.getElementById(Constants.ID_FOLLOW_THEME_CHECKBOX).checked = styles.followTheme;
+    document.getElementById('qr-menu-border-picker').value = styles.menuBorderColor || '#555555';
+    document.getElementById(Constants.ID_FOLLOW_THEME_CHECKBOX).checked = !!styles.followTheme;
     
-    // 如果启用了跟随主题，禁用颜色选择器
+    // 根据跟随主题选项禁用或启用颜色选择控件
+    const followTheme = document.getElementById(Constants.ID_FOLLOW_THEME_CHECKBOX).checked;
     const colorPickers = document.querySelectorAll('.qr-color-picker, .qr-opacity-slider');
     colorPickers.forEach(picker => {
-        picker.disabled = styles.followTheme;
+        picker.disabled = followTheme;
     });
 }
 
@@ -139,6 +147,16 @@ export function applyMenuStyles() {
     
     // 关闭面板
     closeMenuStylePanel();
+    
+    // 显示应用成功提示
+    const saveStatus = document.getElementById('qr-save-status');
+    if (saveStatus) {
+        saveStatus.textContent = '✓ 样式已应用，点击保存按钮永久保存';
+        saveStatus.style.color = '#4caf50';
+        setTimeout(() => {
+            saveStatus.textContent = '';
+        }, 3000);
+    }
 }
 
 /**
@@ -176,41 +194,61 @@ export function updateMenuStylesUI() {
     }
     
     // 设置CSS变量
-    document.documentElement.style.setProperty('--qr-item-bg-color', styles.itemBgColor);
-    document.documentElement.style.setProperty('--qr-item-text-color', styles.itemTextColor);
-    document.documentElement.style.setProperty('--qr-title-color', styles.titleColor);
-    document.documentElement.style.setProperty('--qr-title-border-color', styles.titleBorderColor);
-    document.documentElement.style.setProperty('--qr-empty-text-color', styles.emptyTextColor);
-    document.documentElement.style.setProperty('--qr-menu-bg-color', styles.menuBgColor);
-    document.documentElement.style.setProperty('--qr-menu-border-color', styles.menuBorderColor);
+    document.documentElement.style.setProperty('--qr-item-bg-color', styles.itemBgColor || 'rgba(60, 60, 60, 0.7)');
+    document.documentElement.style.setProperty('--qr-item-text-color', styles.itemTextColor || 'white');
+    document.documentElement.style.setProperty('--qr-title-color', styles.titleColor || '#ccc');
+    document.documentElement.style.setProperty('--qr-title-border-color', styles.titleBorderColor || '#444');
+    document.documentElement.style.setProperty('--qr-empty-text-color', styles.emptyTextColor || '#666');
+    document.documentElement.style.setProperty('--qr-menu-bg-color', styles.menuBgColor || 'rgba(0, 0, 0, 0.85)');
+    document.documentElement.style.setProperty('--qr-menu-border-color', styles.menuBorderColor || '#555');
 }
 
 // 辅助函数 - hex转rgba
 function hexToRgba(hex, opacity) {
+    if (!hex || typeof hex !== 'string') {
+        return `rgba(0, 0, 0, ${opacity || 1})`;
+    }
+    
     hex = hex.replace('#', '');
+    if (hex.length !== 6) {
+        return `rgba(0, 0, 0, ${opacity || 1})`;
+    }
+    
     const r = parseInt(hex.substring(0, 2), 16);
     const g = parseInt(hex.substring(2, 4), 16);
     const b = parseInt(hex.substring(4, 6), 16);
-    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+    return `rgba(${r}, ${g}, ${b}, ${opacity || 1})`;
 }
 
 // 辅助函数 - rgba转hex
 function rgbaToHex(rgba) {
-    const match = rgba.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([0-9.]+))?\)/);
-    if (!match) return '#000000';
+    // 添加防御性检查
+    if (!rgba || typeof rgba !== 'string') {
+        return '#000000'; // 返回默认黑色
+    }
     
-    const r = parseInt(match[1]);
-    const g = parseInt(match[2]);
-    const b = parseInt(match[3]);
+    const match = rgba.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([0-9.]+))?\)/);
+    if (!match) {
+        // 如果不是rgba格式，直接返回原值(如果是hex格式)或默认值
+        return rgba.startsWith('#') ? rgba : '#000000';
+    }
+    
+    const r = parseInt(match[1], 10);
+    const g = parseInt(match[2], 10);
+    const b = parseInt(match[3], 10);
     
     return `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1)}`;
 }
 
 // 辅助函数 - 获取rgba的透明度值
 function getOpacityFromRgba(rgba) {
+    if (!rgba || typeof rgba !== 'string') {
+        return 1; // 默认不透明
+    }
+    
     const match = rgba.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([0-9.]+))?\)/);
     if (!match) return 1;
-    return match[4] || 1;
+    return parseFloat(match[4] || 1);
 }
 
 /**
