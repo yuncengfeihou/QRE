@@ -204,3 +204,32 @@
     padding: 10px;
     border-radius: 5px;
 }
+
+/* 跟随主题样式 */
+#quick-reply-menu.follow-theme {
+    background-color: var(--background-color, var(--SmartThemeDarkColor, rgba(0, 0, 0, 0.85))) !important;
+    border-color: var(--border-color, var(--SmartThemeBorderColor, #555)) !important;
+    color: var(--text-color, var(--SmartThemeTextColor, white)) !important;
+}
+
+#quick-reply-menu.follow-theme .quick-reply-list-title {
+    color: var(--text-color, var(--SmartThemeTextColor, #ccc)) !important;
+    border-bottom-color: var(--border-color, var(--SmartThemeBorderColor, #444)) !important;
+}
+
+#quick-reply-menu.follow-theme .quick-reply-item {
+    background-color: var(--background-color2, var(--SmartThemeElementColor, rgba(60, 60, 60, 0.7))) !important;
+    color: var(--text-color, var(--SmartThemeTextColor, white)) !important;
+}
+
+#quick-reply-menu.follow-theme .quick-reply-item:hover {
+    background-color: var(--background-color3, var(--SmartThemeElementHoverColor, rgba(100, 100, 100, 0.9))) !important;
+}
+
+#quick-reply-menu.follow-theme .quick-reply-empty {
+    color: var(--text-color2, var(--SmartThemeSecondaryTextColor, #666)) !important;
+}
+
+#quick-reply-menu.follow-theme .quick-reply-list {
+    border-color: var(--border-color, var(--SmartThemeBorderColor, #444)) !important;
+}
