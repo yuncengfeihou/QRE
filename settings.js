@@ -93,8 +93,7 @@ function updateIconDisplay() {
 export function createSettingsHtml() {
     // 菜单样式设置面板
     const stylePanel = `
-    <div id="${Constants.ID_MENU_STYLE_PANEL}" class="inline-drawer-content" style="display:none; position:fixed; left:50%; top:10%; transform:translateX(-50%); 
-        z-index:1002; border-radius:10px; padding:20px; width:500px; max-width:90vw; max-height:80vh; overflow-y:auto;">
+    <div id="${Constants.ID_MENU_STYLE_PANEL}" class="inline-drawer-content">
         <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
             <h3>菜单样式设置</h3>
             <button class="menu_button" id="${Constants.ID_MENU_STYLE_PANEL}-close" style="padding:0 10px;">
@@ -106,13 +105,19 @@ export function createSettingsHtml() {
             <h4>菜单项样式</h4>
             <div class="quick-reply-settings-row">
                 <label>菜单项背景:</label>
-                <input type="color" id="qr-item-bgcolor-picker" class="qr-color-picker">
-                <input type="range" id="qr-item-opacity" min="0" max="1" step="0.1" value="0.7" class="qr-opacity-slider">
-                <span id="qr-item-opacity-value">0.7</span>
+                <div class="qr-color-picker-wrapper">
+                    <input type="color" id="qr-item-bgcolor-picker" class="qr-color-picker">
+                    <input type="text" id="qr-item-bgcolor-picker-text" class="qr-color-text-input" placeholder="#RRGGBB">
+                    <input type="range" id="qr-item-opacity" min="0" max="1" step="0.1" value="0.7" class="qr-opacity-slider">
+                    <span id="qr-item-opacity-value">0.7</span>
+                </div>
             </div>
             <div class="quick-reply-settings-row">
                 <label>菜单项文字:</label>
-                <input type="color" id="qr-item-color-picker" class="qr-color-picker">
+                <div class="qr-color-picker-wrapper">
+                    <input type="color" id="qr-item-color-picker" class="qr-color-picker">
+                    <input type="text" id="qr-item-color-picker-text" class="qr-color-text-input" placeholder="#RRGGBB">
+                </div>
             </div>
         </div>
         
@@ -120,11 +125,17 @@ export function createSettingsHtml() {
             <h4>标题样式</h4>
             <div class="quick-reply-settings-row">
                 <label>标题文字:</label>
-                <input type="color" id="qr-title-color-picker" class="qr-color-picker">
+                <div class="qr-color-picker-wrapper">
+                    <input type="color" id="qr-title-color-picker" class="qr-color-picker">
+                    <input type="text" id="qr-title-color-picker-text" class="qr-color-text-input" placeholder="#RRGGBB">
+                </div>
             </div>
             <div class="quick-reply-settings-row">
                 <label>分割线:</label>
-                <input type="color" id="qr-title-border-picker" class="qr-color-picker">
+                <div class="qr-color-picker-wrapper">
+                    <input type="color" id="qr-title-border-picker" class="qr-color-picker">
+                    <input type="text" id="qr-title-border-picker-text" class="qr-color-text-input" placeholder="#RRGGBB">
+                </div>
             </div>
         </div>
         
@@ -132,7 +143,10 @@ export function createSettingsHtml() {
             <h4>空提示样式</h4>
             <div class="quick-reply-settings-row">
                 <label>提示文字:</label>
-                <input type="color" id="qr-empty-color-picker" class="qr-color-picker">
+                <div class="qr-color-picker-wrapper">
+                    <input type="color" id="qr-empty-color-picker" class="qr-color-picker">
+                    <input type="text" id="qr-empty-color-picker-text" class="qr-color-text-input" placeholder="#RRGGBB">
+                </div>
             </div>
         </div>
         
@@ -140,13 +154,19 @@ export function createSettingsHtml() {
             <h4>菜单面板样式</h4>
             <div class="quick-reply-settings-row">
                 <label>菜单背景:</label>
-                <input type="color" id="qr-menu-bgcolor-picker" class="qr-color-picker">
-                <input type="range" id="qr-menu-opacity" min="0" max="1" step="0.1" value="0.85" class="qr-opacity-slider">
-                <span id="qr-menu-opacity-value">0.85</span>
+                <div class="qr-color-picker-wrapper">
+                    <input type="color" id="qr-menu-bgcolor-picker" class="qr-color-picker">
+                    <input type="text" id="qr-menu-bgcolor-picker-text" class="qr-color-text-input" placeholder="#RRGGBB">
+                    <input type="range" id="qr-menu-opacity" min="0" max="1" step="0.1" value="0.85" class="qr-opacity-slider">
+                    <span id="qr-menu-opacity-value">0.85</span>
+                </div>
             </div>
             <div class="quick-reply-settings-row">
                 <label>菜单边框:</label>
-                <input type="color" id="qr-menu-border-picker" class="qr-color-picker">
+                <div class="qr-color-picker-wrapper">
+                    <input type="color" id="qr-menu-border-picker" class="qr-color-picker">
+                    <input type="text" id="qr-menu-border-picker-text" class="qr-color-text-input" placeholder="#RRGGBB">
+                </div>
             </div>
         </div>
         
