@@ -203,6 +203,7 @@ export function createSettingsHtml() {
                         <p>点击发送按钮旁边的图标可以打开或关闭菜单。</p>
                     </div>
                 </div>
+                
                 <div class="flex-container flexGap5">
                     <label for="${Constants.ID_SETTINGS_ENABLED_DROPDOWN}">插件状态:</label>
                     <select id="${Constants.ID_SETTINGS_ENABLED_DROPDOWN}" class="text_pole">
