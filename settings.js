@@ -218,7 +218,7 @@ export function createSettingsHtml() {
                     </div>
                 </div>
                 
-                <div class="flex-container flexGap5 custom-icon-container" style="display: none;">
+                <div class="flex-container flexGap5 custom-icon-container" style="display: none; margin-top:10px;">
                     <label for="${Constants.ID_CUSTOM_ICON_URL}">自定义图标:</label>
                     <div style="display:flex; flex-grow:1; gap:5px;">
                         <input type="text" id="${Constants.ID_CUSTOM_ICON_URL}" class="text_pole" style="flex-grow:1;"
@@ -231,14 +231,14 @@ export function createSettingsHtml() {
                     </div>
                 </div>
                 
-                <div class="flex-container flexGap5" style="margin:10px 0;">
+                <div class="flex-container flexGap5" style="margin:10px 0; align-items:center;">
                     <input type="checkbox" id="${Constants.ID_COLOR_MATCH_CHECKBOX}" style="margin-right:5px;" />
                     <label for="${Constants.ID_COLOR_MATCH_CHECKBOX}">
                         使用与发送按钮相匹配的颜色风格
                     </label>
                 </div>
                 
-                <div class="flex-container" style="justify-content: space-between; margin-top: 15px;">
+                <div style="display:flex; justify-content:space-between; margin-top:15px;">
                     <button id="${Constants.ID_MENU_STYLE_BUTTON}" class="menu_button">
                         <i class="fa-solid fa-palette"></i> 菜单样式
                     </button>
@@ -470,18 +470,6 @@ export function setupSettingsEventListeners() {
                 saveButton.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> 保存设置';
                 saveButton.style.backgroundColor = '';
             }, 2000);
-        });
-    }
-    
-    // 处理自定义图标容器显示逻辑
-    const iconTypeDropdown = document.getElementById(Constants.ID_ICON_TYPE_DROPDOWN);
-    if (iconTypeDropdown) {
-        iconTypeDropdown.addEventListener('change', function() {
-            const customIconContainer = document.querySelector('.custom-icon-container');
-            if (customIconContainer) {
-                customIconContainer.style.display = 
-                    this.value === Constants.ICON_TYPES.CUSTOM ? 'flex' : 'none';
-            }
         });
     }
 }
