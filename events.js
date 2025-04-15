@@ -180,9 +180,9 @@ export function updateMenuStylesUI() {
     const settings = extension_settings[Constants.EXTENSION_NAME];
     const styles = settings.menuStyles || Constants.DEFAULT_MENU_STYLES;
     
-    // 如果启用了跟随主题，则不应用自定义样式
+    // 如果启用了跟随主题
     if (styles.followTheme) {
-        // 移除可能存在的内联样式
+        // 移除自定义变量
         document.documentElement.style.removeProperty('--qr-item-bg-color');
         document.documentElement.style.removeProperty('--qr-item-text-color');
         document.documentElement.style.removeProperty('--qr-title-color');
@@ -190,17 +190,22 @@ export function updateMenuStylesUI() {
         document.documentElement.style.removeProperty('--qr-empty-text-color');
         document.documentElement.style.removeProperty('--qr-menu-bg-color');
         document.documentElement.style.removeProperty('--qr-menu-border-color');
-        return;
+        
+        // 添加一个类以标识启用了跟随主题
+        document.getElementById(Constants.ID_MENU)?.classList.add('follow-theme');
+    } else {
+        // 禁用跟随主题，移除标识类
+        document.getElementById(Constants.ID_MENU)?.classList.remove('follow-theme');
+        
+        // 设置自定义CSS变量
+        document.documentElement.style.setProperty('--qr-item-bg-color', styles.itemBgColor || 'rgba(60, 60, 60, 0.7)');
+        document.documentElement.style.setProperty('--qr-item-text-color', styles.itemTextColor || 'white');
+        document.documentElement.style.setProperty('--qr-title-color', styles.titleColor || '#ccc');
+        document.documentElement.style.setProperty('--qr-title-border-color', styles.titleBorderColor || '#444');
+        document.documentElement.style.setProperty('--qr-empty-text-color', styles.emptyTextColor || '#666');
+        document.documentElement.style.setProperty('--qr-menu-bg-color', styles.menuBgColor || 'rgba(0, 0, 0, 0.85)');
+        document.documentElement.style.setProperty('--qr-menu-border-color', styles.menuBorderColor || '#555');
     }
-    
-    // 设置CSS变量
-    document.documentElement.style.setProperty('--qr-item-bg-color', styles.itemBgColor || 'rgba(60, 60, 60, 0.7)');
-    document.documentElement.style.setProperty('--qr-item-text-color', styles.itemTextColor || 'white');
-    document.documentElement.style.setProperty('--qr-title-color', styles.titleColor || '#ccc');
-    document.documentElement.style.setProperty('--qr-title-border-color', styles.titleBorderColor || '#444');
-    document.documentElement.style.setProperty('--qr-empty-text-color', styles.emptyTextColor || '#666');
-    document.documentElement.style.setProperty('--qr-menu-bg-color', styles.menuBgColor || 'rgba(0, 0, 0, 0.85)');
-    document.documentElement.style.setProperty('--qr-menu-border-color', styles.menuBorderColor || '#555');
 }
 
 // 辅助函数 - hex转rgba
