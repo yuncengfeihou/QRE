@@ -204,6 +204,30 @@ export function createSettingsHtml() {
         </div>
     </div>
     `;
+    
+    // 图标预览面板 - 新增
+    const iconPreviewPanel = `
+    <div id="quick-reply-icon-preview-panel" class="qr-usage-panel" style="display:none;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+            <h3>图标预览</h3>
+            <button class="menu_button" id="quick-reply-icon-preview-panel-close" style="width:auto; padding:0 10px;">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        
+        <div style="display:flex; justify-content:center; align-items:center; margin:15px 0;">
+            <div id="quick-reply-icon-preview-display" style="font-size:24px; width:50px; height:50px; display:flex; justify-content:center; align-items:center;">
+                <i class="fa-solid fa-rocket"></i>
+            </div>
+        </div>
+        
+        <div style="text-align:center; margin-top:10px;">
+            <button class="menu_button" id="quick-reply-icon-preview-panel-close-btn" style="width:auto; padding:0 10px;">
+                关闭
+            </button>
+        </div>
+    </div>
+    `;
 
     return `
     <div id="${Constants.ID_SETTINGS_CONTAINER}" class="extension-settings">
@@ -231,9 +255,9 @@ export function createSettingsHtml() {
                         <option value="${Constants.ICON_TYPES.BOLT}">闪电图标</option>
                         <option value="${Constants.ICON_TYPES.CUSTOM}">自定义图标</option>
                     </select>
-                    <div class="${Constants.CLASS_ICON_PREVIEW}">
-                        <i class="fa-solid fa-rocket"></i>
-                    </div>
+                    <button id="quick-reply-preview-icon-button" class="menu_button" style="width:auto; padding:0 8px;">
+                        预览
+                    </button>
                 </div>
                 
                 <div class="flex-container flexGap5 custom-icon-container" style="display: none; margin-top:10px;">
@@ -272,69 +296,66 @@ export function createSettingsHtml() {
                 <div id="qr-save-status" style="text-align: center; color: #4caf50; height: 20px; margin-top: 5px;"></div>
             </div>
         </div>
-    </div>${stylePanel}${usagePanel}`;
+    </div>${stylePanel}${usagePanel}${iconPreviewPanel}`;
 }
 
 /**
- * 更新图标预览 - 使用CSS背景图像
+ * 更新图标预览 - 在弹窗中显示而非实时显示
  * @param {string} iconType 图标类型
  */
 function updateIconPreview(iconType) {
-    const previewContainer = document.querySelector(`.${Constants.CLASS_ICON_PREVIEW}`);
-    if (!previewContainer) return;
+    const previewDisplay = document.getElementById('quick-reply-icon-preview-display');
+    if (!previewDisplay) return;
     
     // 清除内容和样式
-    previewContainer.innerHTML = '';
-    previewContainer.style.backgroundImage = '';
-    previewContainer.style.backgroundSize = '';
-    previewContainer.style.backgroundPosition = '';
-    previewContainer.style.backgroundRepeat = '';
+    previewDisplay.innerHTML = '';
+    previewDisplay.style.backgroundImage = '';
+    previewDisplay.style.backgroundSize = '';
+    previewDisplay.style.backgroundPosition = '';
+    previewDisplay.style.backgroundRepeat = '';
     
     if (iconType === Constants.ICON_TYPES.CUSTOM) {
-        const customContent = extension_settings[Constants.EXTENSION_NAME].customIconUrl?.trim() || '';
-        
-        if (!customContent) {
-            previewContainer.innerHTML = '<span>无</span>';
-            return;
-        }
-        
-        // 使用CSS背景图像显示
-        if (customContent.startsWith('<svg') && customContent.includes('</svg>')) {
-            // SVG代码 - 转换为Data URL
-            const svgDataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(customContent);
-            previewContainer.style.backgroundImage = `url('${svgDataUrl}')`;
-            previewContainer.style.backgroundSize = '20px 20px';
-            previewContainer.style.backgroundPosition = 'center';
-            previewContainer.style.backgroundRepeat = 'no-repeat';
-        } 
-        else if (customContent.startsWith('data:') || 
-                customContent.startsWith('http') || 
-                customContent.endsWith('.png') || 
-                customContent.endsWith('.jpg') || 
-                customContent.endsWith('.svg') ||
-                customContent.endsWith('.gif')) {
-            // URL或完整的Data URL
-            previewContainer.style.backgroundImage = `url('${customContent}')`;
-            previewContainer.style.backgroundSize = '20px 20px';
-            previewContainer.style.backgroundPosition = 'center';
-            previewContainer.style.backgroundRepeat = 'no-repeat';
-        } 
-        else if (customContent.includes('base64,')) {
-            // 不完整的base64，尝试补全
-            let imgUrl = customContent;
-            if (!customContent.startsWith('data:')) {
-                imgUrl = 'data:image/png;base64,' + customContent.split('base64,')[1];
-            }
-            previewContainer.style.backgroundImage = `url('${imgUrl}')`;
-            previewContainer.style.backgroundSize = '20px 20px';
-            previewContainer.style.backgroundPosition = 'center';
-            previewContainer.style.backgroundRepeat = 'no-repeat';
-        } else {
-            previewContainer.innerHTML = '<span>(格式不支持)</span>';
-        }
+        // 自定义图标不显示任何预览
+        previewDisplay.innerHTML = '<span>自定义图标不预览</span>';
+        previewDisplay.style.fontSize = '14px';
     } else {
+        // 显示内置图标
         const iconClass = Constants.ICON_CLASS_MAP[iconType] || Constants.ICON_CLASS_MAP[Constants.ICON_TYPES.ROCKET];
-        previewContainer.innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
+        previewDisplay.innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
+        previewDisplay.style.fontSize = '24px';
+    }
+}
+
+/**
+ * 显示图标预览弹窗
+ */
+function showIconPreview() {
+    const settings = extension_settings[Constants.EXTENSION_NAME];
+    const iconType = settings.iconType || Constants.ICON_TYPES.ROCKET;
+    
+    // 更新预览内容
+    updateIconPreview(iconType);
+    
+    // 显示预览面板
+    const previewPanel = document.getElementById('quick-reply-icon-preview-panel');
+    if (previewPanel) {
+        previewPanel.style.display = 'block';
+        
+        // 计算并设置面板位置
+        const windowHeight = window.innerHeight;
+        const topPosition = Math.max(50, windowHeight * 0.3);
+        previewPanel.style.top = `${topPosition}px`;
+        previewPanel.style.transform = 'translateX(-50%)';
+    }
+}
+
+/**
+ * 关闭图标预览弹窗
+ */
+function closeIconPreview() {
+    const previewPanel = document.getElementById('quick-reply-icon-preview-panel');
+    if (previewPanel) {
+        previewPanel.style.display = 'none';
     }
 }
 
@@ -356,12 +377,7 @@ function handleFileUpload(event) {
             const settings = extension_settings[Constants.EXTENSION_NAME];
             settings.customIconUrl = e.target.result;
             
-            // 更新预览
-            if (settings.iconType === Constants.ICON_TYPES.CUSTOM) {
-                updateIconPreview(Constants.ICON_TYPES.CUSTOM);
-            }
-            
-            // 更新图标显示
+            // 更新图标显示 - 不再更新预览
             updateIconDisplay();
             
             // 保存设置
@@ -461,18 +477,12 @@ export function handleSettingsChange(event) {
         if (customIconContainer) {
             customIconContainer.style.display = iconType === Constants.ICON_TYPES.CUSTOM ? 'flex' : 'none';
         }
-        
-        // 更新图标预览
-        updateIconPreview(iconType);
+        // 不再实时更新预览
     } 
     else if (target.id === Constants.ID_CUSTOM_ICON_URL) {
         const url = target.value;
         settings.customIconUrl = url;
-        
-        // 如果当前是自定义图标模式，更新预览
-        if (settings.iconType === Constants.ICON_TYPES.CUSTOM) {
-            updateIconPreview(Constants.ICON_TYPES.CUSTOM);
-        }
+        // 不再实时更新预览
     } 
     else if (target.id === Constants.ID_COLOR_MATCH_CHECKBOX) {
         const isMatched = target.checked;
@@ -535,9 +545,26 @@ export function setupSettingsEventListeners() {
     }
     
     // 使用说明面板关闭按钮监听器
-    const usageCloseButton = document.getElementById('quick-reply-menu-usage-panel-close');
+    const usageCloseButton = document.getElementById(`${Constants.ID_USAGE_PANEL}-close`);
     if (usageCloseButton) {
         usageCloseButton.addEventListener('click', closeUsagePanel);
+    }
+    
+    // 图标预览按钮监听器
+    const previewButton = document.getElementById('quick-reply-preview-icon-button');
+    if (previewButton) {
+        previewButton.addEventListener('click', showIconPreview);
+    }
+    
+    // 图标预览面板关闭按钮监听器
+    const previewCloseButton = document.getElementById('quick-reply-icon-preview-panel-close');
+    if (previewCloseButton) {
+        previewCloseButton.addEventListener('click', closeIconPreview);
+    }
+    
+    const previewCloseBtn = document.getElementById('quick-reply-icon-preview-panel-close-btn');
+    if (previewCloseBtn) {
+        previewCloseBtn.addEventListener('click', closeIconPreview);
     }
     
     // 文件上传监听器
@@ -553,10 +580,7 @@ export function setupSettingsEventListeners() {
             saveSettings();
             // 显示保存成功提示
             const settings = extension_settings[Constants.EXTENSION_NAME];
-            // 更新图标预览和显示
-            if (settings.iconType === Constants.ICON_TYPES.CUSTOM) {
-                updateIconPreview(Constants.ICON_TYPES.CUSTOM);
-            }
+            // 更新图标显示
             updateIconDisplay();
             
             // 显示保存成功的临时提示
@@ -615,9 +639,6 @@ export function loadAndApplySettings() {
     
     // 设置文件上传事件监听器
     setupSettingsEventListeners();
-    
-    // 更新图标预览
-    updateIconPreview(settings.iconType);
     
     // 如果禁用则隐藏按钮
     if (!settings.enabled && sharedState.domElements.rocketButton) {
