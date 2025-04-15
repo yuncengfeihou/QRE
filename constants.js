@@ -48,6 +48,7 @@ export const ICON_CLASS_MAP = {
     [ICON_TYPES.CUSTOM]: ''  // 自定义图标不使用FontAwesome类
 };
 
+
 // 新增常量用于菜单样式功能
 export const ID_MENU_STYLE_BUTTON = `${EXTENSION_NAME}-menu-style-button`;
 export const ID_MENU_STYLE_PANEL = `${EXTENSION_NAME}-menu-style-panel`;
