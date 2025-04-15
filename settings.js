@@ -167,7 +167,8 @@ export function createSettingsHtml() {
                 <i class="fa-solid fa-check"></i> 应用样式
             </button>
         </div>
-    </div>`;
+    </div>
+    `;
 
     return `
     <div id="${Constants.ID_SETTINGS_CONTAINER}" class="extension-settings">
