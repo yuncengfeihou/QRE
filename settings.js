@@ -93,11 +93,10 @@ function updateIconDisplay() {
 export function createSettingsHtml() {
     // 菜单样式设置面板
     const stylePanel = `
-    <div id="${Constants.ID_MENU_STYLE_PANEL}" style="display:none; position:fixed; left:50%; top:10%; transform:translateX(-50%); 
-        z-index:1002; background-color:#0f0f0f; border:1px solid #444; border-radius:10px; padding:20px; width:500px; max-width:90vw;
-        max-height:80vh; overflow-y:auto;">
+    <div id="${Constants.ID_MENU_STYLE_PANEL}" class="inline-drawer-content" style="display:none; position:fixed; left:50%; top:10%; transform:translateX(-50%); 
+        z-index:1002; border-radius:10px; padding:20px; width:500px; max-width:90vw; max-height:80vh; overflow-y:auto;">
         <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
-            <h3 style="margin:0">菜单样式设置</h3>
+            <h3>菜单样式设置</h3>
             <button class="menu_button" id="${Constants.ID_MENU_STYLE_PANEL}-close" style="padding:0 10px;">
                 <i class="fa-solid fa-times"></i>
             </button>
