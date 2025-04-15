@@ -315,7 +315,17 @@ export function setupEventListeners() {
     settingsDropdown?.addEventListener('change', handleSettingsChange);
     
     // 新增图标设置相关监听器
-    iconTypeDropdown?.addEventListener('change', handleSettingsChange);
+    iconTypeDropdown?.addEventListener('change', (event) => {
+        handleSettingsChange(event);
+        
+        // 处理自定义图标容器显示逻辑
+        const customIconContainer = document.querySelector('.custom-icon-container');
+        if (customIconContainer) {
+            customIconContainer.style.display = 
+                event.target.value === Constants.ICON_TYPES.CUSTOM ? 'flex' : 'none';
+        }
+    });
+    
     customIconUrl?.addEventListener('input', handleSettingsChange);
     colorMatchCheckbox?.addEventListener('change', handleSettingsChange);
     
@@ -346,4 +356,26 @@ export function setupEventListeners() {
 
     // 设置颜色选择器与文本输入框同步
     setupColorPickerSync();
+    
+    // 处理文件上传
+    const fileUpload = document.getElementById('icon-file-upload');
+    if (fileUpload) {
+        fileUpload.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const customIconUrl = document.getElementById(Constants.ID_CUSTOM_ICON_URL);
+                if (customIconUrl) {
+                    customIconUrl.value = e.target.result; // 将文件转为base64
+                    
+                    // 创建一个合成的change事件
+                    const inputEvent = new Event('input', { bubbles: true });
+                    customIconUrl.dispatchEvent(inputEvent);
+                }
+            };
+            reader.readAsDataURL(file);
+        });
+    }
 }
