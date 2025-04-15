@@ -76,26 +76,43 @@ function loadMenuStylesIntoPanel() {
     const styles = settings.menuStyles || JSON.parse(JSON.stringify(Constants.DEFAULT_MENU_STYLES));
     
     // 设置各个控件的值时添加检查
-    document.getElementById('qr-item-bgcolor-picker').value = 
-        styles.itemBgColor && typeof styles.itemBgColor === 'string' ? rgbaToHex(styles.itemBgColor) : '#3c3c3c';
+    const itemBgColorHex = styles.itemBgColor && typeof styles.itemBgColor === 'string' ? rgbaToHex(styles.itemBgColor) : '#3c3c3c';
+    document.getElementById('qr-item-bgcolor-picker').value = itemBgColorHex;
+    document.getElementById('qr-item-bgcolor-text').value = itemBgColorHex.toUpperCase();
+    
     document.getElementById('qr-item-opacity').value = 
         styles.itemBgColor && typeof styles.itemBgColor === 'string' ? getOpacityFromRgba(styles.itemBgColor) : 0.7;
     document.getElementById('qr-item-opacity-value').textContent = 
         styles.itemBgColor && typeof styles.itemBgColor === 'string' ? getOpacityFromRgba(styles.itemBgColor) : 0.7;
     
-    document.getElementById('qr-item-color-picker').value = styles.itemTextColor || '#ffffff';
-    document.getElementById('qr-title-color-picker').value = styles.titleColor || '#cccccc';
-    document.getElementById('qr-title-border-picker').value = styles.titleBorderColor || '#444444';
-    document.getElementById('qr-empty-color-picker').value = styles.emptyTextColor || '#666666';
+    const itemTextColor = styles.itemTextColor || '#ffffff';
+    document.getElementById('qr-item-color-picker').value = itemTextColor;
+    document.getElementById('qr-item-color-text').value = itemTextColor.toUpperCase();
     
-    document.getElementById('qr-menu-bgcolor-picker').value = 
-        styles.menuBgColor && typeof styles.menuBgColor === 'string' ? rgbaToHex(styles.menuBgColor) : '#000000';
+    const titleColor = styles.titleColor || '#cccccc';
+    document.getElementById('qr-title-color-picker').value = titleColor;
+    document.getElementById('qr-title-color-text').value = titleColor.toUpperCase();
+    
+    const titleBorderColor = styles.titleBorderColor || '#444444';
+    document.getElementById('qr-title-border-picker').value = titleBorderColor;
+    document.getElementById('qr-title-border-text').value = titleBorderColor.toUpperCase();
+    
+    const emptyColor = styles.emptyTextColor || '#666666';
+    document.getElementById('qr-empty-color-picker').value = emptyColor;
+    document.getElementById('qr-empty-color-text').value = emptyColor.toUpperCase();
+    
+    const menuBgColorHex = styles.menuBgColor && typeof styles.menuBgColor === 'string' ? rgbaToHex(styles.menuBgColor) : '#000000';
+    document.getElementById('qr-menu-bgcolor-picker').value = menuBgColorHex;
+    document.getElementById('qr-menu-bgcolor-text').value = menuBgColorHex.toUpperCase();
+    
     document.getElementById('qr-menu-opacity').value = 
         styles.menuBgColor && typeof styles.menuBgColor === 'string' ? getOpacityFromRgba(styles.menuBgColor) : 0.85;
     document.getElementById('qr-menu-opacity-value').textContent = 
         styles.menuBgColor && typeof styles.menuBgColor === 'string' ? getOpacityFromRgba(styles.menuBgColor) : 0.85;
     
-    document.getElementById('qr-menu-border-picker').value = styles.menuBorderColor || '#555555';
+    const menuBorderColor = styles.menuBorderColor || '#555555';
+    document.getElementById('qr-menu-border-picker').value = menuBorderColor;
+    document.getElementById('qr-menu-border-text').value = menuBorderColor.toUpperCase();
 }
 
 /**
@@ -117,21 +134,31 @@ export function applyMenuStyles() {
         settings.menuStyles = JSON.parse(JSON.stringify(Constants.DEFAULT_MENU_STYLES));
     }
     
-    // 获取面板中的设置值
-    const itemBgColor = document.getElementById('qr-item-bgcolor-picker').value;
+    // 从颜色选择器或文本输入框获取值
+    function getColorValue(pickerId) {
+        const textInput = document.getElementById(pickerId + '-text');
+        if (textInput && /^#[0-9A-F]{6}$/i.test(textInput.value)) {
+            return textInput.value;
+        }
+        const picker = document.getElementById(pickerId);
+        return picker ? picker.value : null;
+    }
+    
+    // 获取各项颜色值
+    const itemBgColor = getColorValue('qr-item-bgcolor-picker');
     const itemOpacity = document.getElementById('qr-item-opacity').value;
     settings.menuStyles.itemBgColor = hexToRgba(itemBgColor, itemOpacity);
     
-    settings.menuStyles.itemTextColor = document.getElementById('qr-item-color-picker').value;
-    settings.menuStyles.titleColor = document.getElementById('qr-title-color-picker').value;
-    settings.menuStyles.titleBorderColor = document.getElementById('qr-title-border-picker').value;
-    settings.menuStyles.emptyTextColor = document.getElementById('qr-empty-color-picker').value;
+    settings.menuStyles.itemTextColor = getColorValue('qr-item-color-picker');
+    settings.menuStyles.titleColor = getColorValue('qr-title-color-picker');
+    settings.menuStyles.titleBorderColor = getColorValue('qr-title-border-picker');
+    settings.menuStyles.emptyTextColor = getColorValue('qr-empty-color-picker');
     
-    const menuBgColor = document.getElementById('qr-menu-bgcolor-picker').value;
+    const menuBgColor = getColorValue('qr-menu-bgcolor-picker');
     const menuOpacity = document.getElementById('qr-menu-opacity').value;
     settings.menuStyles.menuBgColor = hexToRgba(menuBgColor, menuOpacity);
     
-    settings.menuStyles.menuBorderColor = document.getElementById('qr-menu-border-picker').value;
+    settings.menuStyles.menuBorderColor = getColorValue('qr-menu-border-picker');
     
     // 删除followTheme属性（如果存在）
     if (settings.menuStyles.hasOwnProperty('followTheme')) {
@@ -240,6 +267,36 @@ function getOpacityFromRgba(rgba) {
 }
 
 /**
+ * 配对并同步所有颜色选择器和文本输入框
+ */
+function setupColorPickerSync() {
+    document.querySelectorAll('.qr-color-picker').forEach(picker => {
+        const textId = picker.id + '-text';
+        const textInput = document.getElementById(textId);
+        if (!textInput) return;
+        
+        // 初始化文本输入框的值
+        textInput.value = picker.value.toUpperCase();
+        
+        // 当颜色选择器改变时更新文本输入框
+        picker.addEventListener('input', () => {
+            textInput.value = picker.value.toUpperCase();
+        });
+        
+        // 当文本输入框改变时更新颜色选择器
+        textInput.addEventListener('input', () => {
+            const value = textInput.value;
+            // 支持有或没有#前缀的六位十六进制颜色
+            if (/^#?([0-9A-F]{6})$/i.test(value)) {
+                const color = value.startsWith('#') ? value : '#' + value;
+                picker.value = color;
+                textInput.value = color.toUpperCase();
+            }
+        });
+    });
+}
+
+/**
  * Sets up all event listeners for the plugin.
  */
 export function setupEventListeners() {
@@ -251,21 +308,22 @@ export function setupEventListeners() {
         colorMatchCheckbox
     } = sharedState.domElements;
 
-    // 基本按钮和菜单事件监听
     rocketButton?.addEventListener('click', handleRocketButtonClick);
     document.addEventListener('click', handleOutsideClick);
 
-    // 设置相关监听器
+    // Settings listeners
     settingsDropdown?.addEventListener('change', handleSettingsChange);
+    
+    // 新增图标设置相关监听器
     iconTypeDropdown?.addEventListener('change', handleSettingsChange);
     customIconUrl?.addEventListener('input', handleSettingsChange);
     colorMatchCheckbox?.addEventListener('change', handleSettingsChange);
     
-    // 菜单样式按钮监听器
+    // 添加菜单样式按钮监听器
     const menuStyleButton = document.getElementById(Constants.ID_MENU_STYLE_BUTTON);
     menuStyleButton?.addEventListener('click', handleMenuStyleButtonClick);
     
-    // 菜单样式面板相关监听器
+    // 添加菜单样式面板相关监听器
     const closeButton = document.getElementById(`${Constants.ID_MENU_STYLE_PANEL}-close`);
     closeButton?.addEventListener('click', closeMenuStylePanel);
     
@@ -275,7 +333,7 @@ export function setupEventListeners() {
     const resetButton = document.getElementById(Constants.ID_RESET_STYLE_BUTTON);
     resetButton?.addEventListener('click', resetMenuStyles);
     
-    // 不透明度滑块监听器
+    // 添加不透明度滑块变化监听器
     const itemOpacitySlider = document.getElementById('qr-item-opacity');
     itemOpacitySlider?.addEventListener('input', function() {
         document.getElementById('qr-item-opacity-value').textContent = this.value;
@@ -286,98 +344,6 @@ export function setupEventListeners() {
         document.getElementById('qr-menu-opacity-value').textContent = this.value;
     });
 
-    // 颜色选择器同步功能
-    const colorPickers = [
-        { picker: 'qr-item-bgcolor-picker', text: 'qr-item-bgcolor-text' },
-        { picker: 'qr-item-color-picker', text: 'qr-item-color-text' },
-        { picker: 'qr-title-color-picker', text: 'qr-title-color-text' },
-        { picker: 'qr-title-border-picker', text: 'qr-title-border-text' },
-        { picker: 'qr-empty-color-picker', text: 'qr-empty-color-text' },
-        { picker: 'qr-menu-bgcolor-picker', text: 'qr-menu-bgcolor-text' },
-        { picker: 'qr-menu-border-picker', text: 'qr-menu-border-text' }
-    ];
-
-    colorPickers.forEach(({ picker, text }) => {
-        const pickerElement = document.getElementById(picker);
-        const textElement = document.getElementById(text);
-        
-        if (pickerElement && textElement) {
-            // 颜色选择器改变时更新文本输入框
-            pickerElement.addEventListener('input', (e) => {
-                textElement.value = e.target.value.toUpperCase();
-            });
-
-            pickerElement.addEventListener('change', (e) => {
-                textElement.value = e.target.value.toUpperCase();
-            });
-
-            // 文本输入框改变时更新颜色选择器
-            textElement.addEventListener('input', (e) => {
-                let color = e.target.value;
-                // 添加#前缀如果用户没有输入
-                if (color.charAt(0) !== '#') {
-                    color = '#' + color;
-                }
-                // 验证颜色代码格式
-                if (/^#[0-9A-Fa-f]{6}$/.test(color)) {
-                    pickerElement.value = color;
-                    // 触发颜色选择器的change事件以更新预览
-                    pickerElement.dispatchEvent(new Event('change', { bubbles: true }));
-                }
-            });
-
-            // 文本输入框失去焦点时格式化
-            textElement.addEventListener('blur', (e) => {
-                let color = e.target.value;
-                if (color.charAt(0) !== '#') {
-                    color = '#' + color;
-                }
-                // 如果是有效的颜色代码，格式化为大写
-                if (/^#[0-9A-Fa-f]{6}$/.test(color)) {
-                    e.target.value = color.toUpperCase();
-                } else {
-                    // 如果是无效的颜色代码，重置为颜色选择器的当前值
-                    e.target.value = pickerElement.value.toUpperCase();
-                }
-            });
-
-            // 初始化文本输入框的值
-            textElement.value = pickerElement.value.toUpperCase();
-        }
-    });
-
-    // 文件上传监听器
-    const fileInput = document.getElementById('icon-file-upload');
-    if (fileInput) {
-        fileInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const customIconUrl = document.getElementById(Constants.ID_CUSTOM_ICON_URL);
-                if (customIconUrl) {
-                    customIconUrl.value = e.target.result;
-                    
-                    // 更新设置
-                    const settings = extension_settings[Constants.EXTENSION_NAME];
-                    settings.customIconUrl = e.target.result;
-                    
-                    // 更新预览
-                    if (settings.iconType === Constants.ICON_TYPES.CUSTOM) {
-                        updateIconPreview(Constants.ICON_TYPES.CUSTOM);
-                    }
-                    
-                    // 更新图标显示
-                    updateIconDisplay();
-                    
-                    // 保存设置
-                    if (typeof context !== 'undefined' && context.saveExtensionSettings) {
-                        context.saveExtensionSettings();
-                    }
-                }
-            };
-            reader.readAsDataURL(file);
-        });
-    }
+    // 设置颜色选择器与文本输入框同步
+    setupColorPickerSync();
 }
