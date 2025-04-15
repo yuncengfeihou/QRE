@@ -181,36 +181,62 @@ export function updateMenuStylesUI() {
     
     // 如果启用了跟随主题
     if (styles.followTheme) {
-        // 移除所有自定义样式类
+        // 1. 移除所有自定义样式
         menu.classList.remove('custom-styled-menu');
+        menu.classList.add('inherit-host-theme');
         
-        // 从body或html获取主题相关的类
-        const themeClasses = [];
+        // 2. 直接复制body的所有类到菜单
+        menu.className = 'inherit-host-theme';
+        menu.classList.add(Constants.ID_MENU); // 保留ID对应的类
+        const bodyClasses = Array.from(document.body.classList);
+        bodyClasses.forEach(cls => menu.classList.add(cls));
         
-        // 收集body上的类名
-        document.body.classList.forEach(className => {
-            // 过滤出很可能是主题相关的类名
-            if (className.includes('theme') || 
-                className.includes('dark') || 
-                className.includes('light') ||
-                className.endsWith('-ui') ||
-                className.includes('style')) {
-                themeClasses.push(className);
+        // 3. 给菜单内部元素添加宿主应用正在使用的类
+        // 获取宿主应用常用的类
+        const hostPanelClass = document.querySelector('.inline-drawer, .card, .content') ? 
+            (document.querySelector('.inline-drawer')?.className || 
+             document.querySelector('.card')?.className || 
+             document.querySelector('.content')?.className) : '';
+             
+        const hostButtonClass = document.querySelector('.menu_button, .btn-primary, .btn') ?
+            (document.querySelector('.menu_button')?.className || 
+             document.querySelector('.btn-primary')?.className || 
+             document.querySelector('.btn')?.className) : '';
+             
+        const hostTitleClass = document.querySelector('.inline-drawer-header, h4, .card-header') ?
+            (document.querySelector('.inline-drawer-header')?.className || 
+             document.querySelector('h4')?.className || 
+             document.querySelector('.card-header')?.className) : '';
+        
+        // 应用宿主应用类到菜单元素
+        menu.querySelectorAll('.quick-reply-list').forEach(el => {
+            el.className = 'quick-reply-list';
+            if (hostPanelClass) {
+                hostPanelClass.split(' ').forEach(cls => {
+                    if (cls) el.classList.add(cls);
+                });
             }
         });
         
-        // 添加这些类到菜单
-        themeClasses.forEach(cls => menu.classList.add(cls));
+        menu.querySelectorAll('.quick-reply-item').forEach(el => {
+            el.className = 'quick-reply-item';
+            if (hostButtonClass) {
+                hostButtonClass.split(' ').forEach(cls => {
+                    if (cls) el.classList.add(cls);
+                });
+            }
+        });
         
-        // 添加一个特殊标记类，表示跟随主题
-        menu.classList.add('follow-system-theme');
+        menu.querySelectorAll('.quick-reply-list-title').forEach(el => {
+            el.className = 'quick-reply-list-title';
+            if (hostTitleClass) {
+                hostTitleClass.split(' ').forEach(cls => {
+                    if (cls) el.classList.add(cls);
+                });
+            }
+        });
         
-        // 清除可能存在的内联样式
-        menu.style = '';
-        menu.querySelectorAll('.quick-reply-item, .quick-reply-list-title, .quick-reply-empty, .quick-reply-list')
-            .forEach(el => { el.style = ''; });
-            
-        // 清除CSS变量
+        // 移除CSS变量自定义样式
         document.documentElement.style.removeProperty('--qr-item-bg-color');
         document.documentElement.style.removeProperty('--qr-item-text-color');
         document.documentElement.style.removeProperty('--qr-title-color');
@@ -219,13 +245,19 @@ export function updateMenuStylesUI() {
         document.documentElement.style.removeProperty('--qr-menu-bg-color');
         document.documentElement.style.removeProperty('--qr-menu-border-color');
     } else {
-        // 移除主题相关的类
-        Array.from(menu.classList)
-            .filter(cls => cls !== Constants.ID_MENU)
-            .forEach(cls => menu.classList.remove(cls));
-        
-        // 添加自定义样式类    
+        // 恢复自定义样式
+        // 移除所有可能的继承类
+        const originalClass = menu.className;
+        menu.className = '';
+        menu.classList.add(Constants.ID_MENU);
         menu.classList.add('custom-styled-menu');
+        
+        // 恢复菜单内部元素的原始类
+        menu.querySelectorAll('.quick-reply-list, .quick-reply-item, .quick-reply-list-title, .quick-reply-empty').forEach(el => {
+            // 保留第一个类(基本类)，移除其他所有类
+            const baseClass = el.classList[0];
+            el.className = baseClass || '';
+        });
         
         // 应用自定义样式
         document.documentElement.style.setProperty('--qr-item-bg-color', styles.itemBgColor || 'rgba(60, 60, 60, 0.7)');
