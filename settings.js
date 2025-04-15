@@ -273,7 +273,7 @@ function updateIconPreview(iconType) {
         const customContent = extension_settings[Constants.EXTENSION_NAME].customIconUrl?.trim() || '';
         
         if (!customContent) {
-            previewContainer.innerHTML = '<span>(无预览)</span>';
+            previewContainer.innerHTML = '<span>无</span>';
             return;
         }
         
