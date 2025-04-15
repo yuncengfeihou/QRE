@@ -298,3 +298,29 @@
     --qr-menu-bg-color: rgba(0, 0, 0, 0.85);
     --qr-menu-border-color: #555;
 }
+
+/* 确保使用说明折叠区域正常工作 */
+#quick-reply-menu-settings .inline-drawer .inline-drawer-content {
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+/* 确保flex容器在移动设备上也能正常工作 */
+@media screen and (max-width: 640px) {
+    .flex-container {
+        display: flex !important;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+    
+    .flex-container > label {
+        min-width: 80px !important;
+        margin-bottom: 5px;
+    }
+    
+    /* 确保勾选框和标签在一行 */
+    #quick-reply-menu-color-match + label {
+        display: inline-block !important;
+        margin-left: 5px;
+    }
+}
