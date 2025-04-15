@@ -96,13 +96,12 @@ function loadMenuStylesIntoPanel() {
         styles.menuBgColor ? getOpacityFromRgba(styles.menuBgColor) : 0.85;
     
     document.getElementById('qr-menu-border-picker').value = styles.menuBorderColor || '#555555';
-    document.getElementById(Constants.ID_FOLLOW_THEME_CHECKBOX).checked = !!styles.followTheme;
+    document.getElementById(Constants.ID_FOLLOW_THEME_CHECKBOX).checked = styles.followTheme || false;
     
-    // 根据跟随主题选项禁用或启用颜色选择控件
-    const followTheme = document.getElementById(Constants.ID_FOLLOW_THEME_CHECKBOX).checked;
+    // 根据跟随主题状态禁用/启用颜色选择控件
     const colorPickers = document.querySelectorAll('.qr-color-picker, .qr-opacity-slider');
     colorPickers.forEach(picker => {
-        picker.disabled = followTheme;
+        picker.disabled = styles.followTheme || false;
     });
 }
 
@@ -148,14 +147,11 @@ export function applyMenuStyles() {
     // 关闭面板
     closeMenuStylePanel();
     
-    // 显示应用成功提示
-    const saveStatus = document.getElementById('qr-save-status');
-    if (saveStatus) {
-        saveStatus.textContent = '✓ 样式已应用，点击保存按钮永久保存';
-        saveStatus.style.color = '#4caf50';
-        setTimeout(() => {
-            saveStatus.textContent = '';
-        }, 3000);
+    // 保存设置到localStorage
+    try {
+        localStorage.setItem('QRA_settings', JSON.stringify(settings));
+    } catch(e) {
+        console.error('保存到localStorage失败:', e);
     }
 }
 
@@ -182,50 +178,130 @@ export function updateMenuStylesUI() {
     
     // 如果启用了跟随主题
     if (styles.followTheme) {
-        // 移除自定义变量
-        document.documentElement.style.removeProperty('--qr-item-bg-color');
-        document.documentElement.style.removeProperty('--qr-item-text-color');
-        document.documentElement.style.removeProperty('--qr-title-color');
-        document.documentElement.style.removeProperty('--qr-title-border-color');
-        document.documentElement.style.removeProperty('--qr-empty-text-color');
-        document.documentElement.style.removeProperty('--qr-menu-bg-color');
-        document.documentElement.style.removeProperty('--qr-menu-border-color');
-        
-        // 添加一个类以标识启用了跟随主题
-        document.getElementById(Constants.ID_MENU)?.classList.add('follow-theme');
+        // 应用主题样式
+        applyThemeToMenu();
     } else {
-        // 禁用跟随主题，移除标识类
-        document.getElementById(Constants.ID_MENU)?.classList.remove('follow-theme');
-        
-        // 设置自定义CSS变量
-        document.documentElement.style.setProperty('--qr-item-bg-color', styles.itemBgColor || 'rgba(60, 60, 60, 0.7)');
-        document.documentElement.style.setProperty('--qr-item-text-color', styles.itemTextColor || 'white');
-        document.documentElement.style.setProperty('--qr-title-color', styles.titleColor || '#ccc');
-        document.documentElement.style.setProperty('--qr-title-border-color', styles.titleBorderColor || '#444');
-        document.documentElement.style.setProperty('--qr-empty-text-color', styles.emptyTextColor || '#666');
-        document.documentElement.style.setProperty('--qr-menu-bg-color', styles.menuBgColor || 'rgba(0, 0, 0, 0.85)');
-        document.documentElement.style.setProperty('--qr-menu-border-color', styles.menuBorderColor || '#555');
+        // 还原为自定义样式
+        const menu = document.getElementById(Constants.ID_MENU);
+        if (menu) {
+            // 移除直接应用的内联样式
+            menu.style.backgroundColor = '';
+            menu.style.borderColor = '';
+            menu.style.color = '';
+            
+            menu.querySelectorAll('.quick-reply-item, .quick-reply-list-title, .quick-reply-empty, .quick-reply-list')
+                .forEach(el => {
+                    el.style.backgroundColor = '';
+                    el.style.color = '';
+                    el.style.borderBottomColor = '';
+                    el.style.borderColor = '';
+                });
+            
+            // 应用CSS变量
+            document.documentElement.style.setProperty('--qr-item-bg-color', styles.itemBgColor || 'rgba(60, 60, 60, 0.7)');
+            document.documentElement.style.setProperty('--qr-item-text-color', styles.itemTextColor || 'white');
+            document.documentElement.style.setProperty('--qr-title-color', styles.titleColor || '#ccc');
+            document.documentElement.style.setProperty('--qr-title-border-color', styles.titleBorderColor || '#444');
+            document.documentElement.style.setProperty('--qr-empty-text-color', styles.emptyTextColor || '#666');
+            document.documentElement.style.setProperty('--qr-menu-bg-color', styles.menuBgColor || 'rgba(0, 0, 0, 0.85)');
+            document.documentElement.style.setProperty('--qr-menu-border-color', styles.menuBorderColor || '#555');
+        }
     }
 }
 
-// 辅助函数 - hex转rgba
+/**
+ * 应用主题样式到菜单
+ */
+export function applyThemeToMenu() {
+    const menu = document.getElementById(Constants.ID_MENU);
+    if (!menu) return;
+    
+    // 获取主界面的样式参考元素
+    const refElement = document.querySelector('.conversation_template, #chat-container, body');
+    if (!refElement) return;
+    
+    const refStyle = window.getComputedStyle(refElement);
+    const btnElement = document.querySelector('#send_but, .menu_button');
+    const inputElement = document.querySelector('textarea, input[type="text"]');
+    
+    // 获取计算后的样式
+    const bgColor = refStyle.backgroundColor;
+    const textColor = refStyle.color;
+    const borderColor = btnElement ? window.getComputedStyle(btnElement).borderColor : '#444';
+    
+    // 获取元素背景色
+    const elementBgColor = btnElement ? window.getComputedStyle(btnElement).backgroundColor : 'rgba(60, 60, 60, 0.7)';
+    const inputBgColor = inputElement ? window.getComputedStyle(inputElement).backgroundColor : elementBgColor;
+    
+    // 直接应用到菜单元素上
+    menu.style.backgroundColor = adjustColor(bgColor, 0.95); // 稍暗一点的背景
+    menu.style.borderColor = borderColor;
+    menu.style.color = textColor;
+    
+    // 应用到菜单项
+    const items = menu.querySelectorAll('.quick-reply-item');
+    items.forEach(item => {
+        item.style.backgroundColor = elementBgColor;
+        item.style.color = textColor;
+    });
+    
+    // 应用到标题
+    const titles = menu.querySelectorAll('.quick-reply-list-title');
+    titles.forEach(title => {
+        title.style.color = textColor;
+        title.style.borderBottomColor = borderColor;
+    });
+    
+    // 应用到空提示
+    const emptyTexts = menu.querySelectorAll('.quick-reply-empty');
+    emptyTexts.forEach(text => {
+        text.style.color = adjustColor(textColor, 0.7); // 稍淡的文字颜色
+    });
+    
+    // 应用到列表容器
+    const lists = menu.querySelectorAll('.quick-reply-list');
+    lists.forEach(list => {
+        list.style.borderColor = borderColor;
+    });
+}
+
+/**
+ * 辅助函数 - 调整颜色亮度
+ */
+function adjustColor(color, factor) {
+    if (!color || !color.startsWith('rgb')) return color;
+    const parts = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([0-9.]+))?\)/);
+    if (!parts) return color;
+    
+    let r = parseInt(parts[1]);
+    let g = parseInt(parts[2]);
+    let b = parseInt(parts[3]);
+    const a = parts[4] ? parseFloat(parts[4]) : 1;
+    
+    // 调整RGB值
+    r = Math.max(0, Math.min(255, r * factor));
+    g = Math.max(0, Math.min(255, g * factor));
+    b = Math.max(0, Math.min(255, b * factor));
+    
+    return `rgba(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)}, ${a})`;
+}
+
+/**
+ * 辅助函数 - hex转rgba
+ */
 function hexToRgba(hex, opacity) {
-    if (!hex || typeof hex !== 'string') {
-        return `rgba(0, 0, 0, ${opacity || 1})`;
-    }
+    if (!hex) return `rgba(60, 60, 60, ${opacity || 0.7})`;
     
     hex = hex.replace('#', '');
-    if (hex.length !== 6) {
-        return `rgba(0, 0, 0, ${opacity || 1})`;
-    }
-    
     const r = parseInt(hex.substring(0, 2), 16);
     const g = parseInt(hex.substring(2, 4), 16);
     const b = parseInt(hex.substring(4, 6), 16);
-    return `rgba(${r}, ${g}, ${b}, ${opacity || 1})`;
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
 }
 
-// 辅助函数 - rgba转hex
+/**
+ * 辅助函数 - rgba转hex
+ */
 function rgbaToHex(rgba) {
     // 添加防御性检查
     if (!rgba || typeof rgba !== 'string') {
@@ -238,14 +314,16 @@ function rgbaToHex(rgba) {
         return rgba.startsWith('#') ? rgba : '#000000';
     }
     
-    const r = parseInt(match[1], 10);
-    const g = parseInt(match[2], 10);
-    const b = parseInt(match[3], 10);
+    const r = parseInt(match[1]);
+    const g = parseInt(match[2]);
+    const b = parseInt(match[3]);
     
     return `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1)}`;
 }
 
-// 辅助函数 - 获取rgba的透明度值
+/**
+ * 辅助函数 - 获取rgba的透明度值
+ */
 function getOpacityFromRgba(rgba) {
     if (!rgba || typeof rgba !== 'string') {
         return 1; // 默认不透明
