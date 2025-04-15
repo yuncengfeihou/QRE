@@ -298,3 +298,58 @@
     --qr-menu-bg-color: rgba(0, 0, 0, 0.85);
     --qr-menu-border-color: #555;
 }
+
+/* 增强移动端适配 */
+@media screen and (max-width: 768px) {
+    .flex-container {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+    
+    .flex-container label {
+        min-width: 80px;
+    }
+    
+    #quick-reply-menu-icon-type {
+        width: 100px;
+    }
+    
+    .quick-reply-icon-preview {
+        margin-left: 5px;
+    }
+    
+    .custom-icon-container > div {
+        flex-direction: column;
+    }
+    
+    .custom-icon-container button {
+        margin-top: 5px;
+        width: 100% !important;
+    }
+}
+
+/* 桌面端共享样式 */
+.flex-container {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 5px;
+}
+
+.flexGap5 {
+    gap: 5px;
+}
+
+/* 优化图标预览样式 */
+.quick-reply-icon-preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    margin-left: 5px;
+}
