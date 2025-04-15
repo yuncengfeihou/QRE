@@ -187,17 +187,20 @@ export function createSettingsHtml() {
     
     // 使用说明面板
     const usagePanel = `
-    <div id="quick-reply-menu-usage-panel" class="qr-usage-panel">
-        <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
-            <h3>使用说明</h3>
-            <button class="menu_button" id="quick-reply-menu-usage-panel-close" style="padding:0 10px;">
-                <i class="fa-solid fa-times"></i>
-            </button>
+    <div id="${Constants.ID_USAGE_PANEL}" class="qr-usage-panel">
+        <div style="margin-bottom:7px;">
+            <h3 style="color: white; font-weight: bold; margin: 0 0 7px 0;">使用说明</h3>
         </div>
         
         <div class="quick-reply-usage-content">
             <p>此插件隐藏了原有的快捷回复栏，并创建了一个新的快速回复菜单。</p>
-            <p>点击发送按钮旁边的图标可以打开或关闭菜单。</p>
+            <p style="margin-bottom:7px;">点击发送按钮旁边的图标可以打开或关闭菜单。</p>
+        </div>
+        
+        <div style="text-align:center; margin-top:10px;">
+            <button class="menu_button" id="${Constants.ID_USAGE_PANEL}-close">
+                确定
+            </button>
         </div>
     </div>
     `;
