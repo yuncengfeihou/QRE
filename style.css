@@ -198,7 +198,7 @@
     margin: 0 10px;
 }
 
-/* 添加菜单样式面板主题相关样式 */
+/* 菜单样式设置面板 - 修复背景透明问题 */
 #quick-reply-menu-menu-style-panel {
     display: none;
     position: fixed;
@@ -212,10 +212,10 @@
     max-width: 90vw;
     max-height: 80vh;
     overflow-y: auto;
-    /* 继承主题样式 */
-    background-color: var(--background-color);
-    border: 1px solid var(--border-color);
-    color: var(--text-color);
+    /* 添加明确的背景色，使用变量或者回退值 */
+    background-color: var(--background-color1, #0f0f0f);
+    border: 1px solid var(--border-color, #444);
+    color: var(--text-color, #fff);
 }
 
 /* 菜单样式面板标题样式 */
