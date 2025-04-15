@@ -77,11 +77,11 @@ function loadMenuStylesIntoPanel() {
     
     // 设置各个控件的值时添加检查
     document.getElementById('qr-item-bgcolor-picker').value = 
-        styles.itemBgColor ? rgbaToHex(styles.itemBgColor) : '#3c3c3c';
+        styles.itemBgColor && typeof styles.itemBgColor === 'string' ? rgbaToHex(styles.itemBgColor) : '#3c3c3c';
     document.getElementById('qr-item-opacity').value = 
-        styles.itemBgColor ? getOpacityFromRgba(styles.itemBgColor) : 0.7;
+        styles.itemBgColor && typeof styles.itemBgColor === 'string' ? getOpacityFromRgba(styles.itemBgColor) : 0.7;
     document.getElementById('qr-item-opacity-value').textContent = 
-        styles.itemBgColor ? getOpacityFromRgba(styles.itemBgColor) : 0.7;
+        styles.itemBgColor && typeof styles.itemBgColor === 'string' ? getOpacityFromRgba(styles.itemBgColor) : 0.7;
     
     document.getElementById('qr-item-color-picker').value = styles.itemTextColor || '#ffffff';
     document.getElementById('qr-title-color-picker').value = styles.titleColor || '#cccccc';
@@ -89,11 +89,11 @@ function loadMenuStylesIntoPanel() {
     document.getElementById('qr-empty-color-picker').value = styles.emptyTextColor || '#666666';
     
     document.getElementById('qr-menu-bgcolor-picker').value = 
-        styles.menuBgColor ? rgbaToHex(styles.menuBgColor) : '#000000';
+        styles.menuBgColor && typeof styles.menuBgColor === 'string' ? rgbaToHex(styles.menuBgColor) : '#000000';
     document.getElementById('qr-menu-opacity').value = 
-        styles.menuBgColor ? getOpacityFromRgba(styles.menuBgColor) : 0.85;
+        styles.menuBgColor && typeof styles.menuBgColor === 'string' ? getOpacityFromRgba(styles.menuBgColor) : 0.85;
     document.getElementById('qr-menu-opacity-value').textContent = 
-        styles.menuBgColor ? getOpacityFromRgba(styles.menuBgColor) : 0.85;
+        styles.menuBgColor && typeof styles.menuBgColor === 'string' ? getOpacityFromRgba(styles.menuBgColor) : 0.85;
     
     document.getElementById('qr-menu-border-picker').value = styles.menuBorderColor || '#555555';
     document.getElementById(Constants.ID_FOLLOW_THEME_CHECKBOX).checked = styles.followTheme || false;
@@ -176,114 +176,66 @@ export function updateMenuStylesUI() {
     const settings = extension_settings[Constants.EXTENSION_NAME];
     const styles = settings.menuStyles || Constants.DEFAULT_MENU_STYLES;
     
-    // 如果启用了跟随主题
-    if (styles.followTheme) {
-        // 应用主题样式
-        applyThemeToMenu();
-    } else {
-        // 还原为自定义样式
-        const menu = document.getElementById(Constants.ID_MENU);
-        if (menu) {
-            // 移除直接应用的内联样式
-            menu.style.backgroundColor = '';
-            menu.style.borderColor = '';
-            menu.style.color = '';
-            
-            menu.querySelectorAll('.quick-reply-item, .quick-reply-list-title, .quick-reply-empty, .quick-reply-list')
-                .forEach(el => {
-                    el.style.backgroundColor = '';
-                    el.style.color = '';
-                    el.style.borderBottomColor = '';
-                    el.style.borderColor = '';
-                });
-            
-            // 应用CSS变量
-            document.documentElement.style.setProperty('--qr-item-bg-color', styles.itemBgColor || 'rgba(60, 60, 60, 0.7)');
-            document.documentElement.style.setProperty('--qr-item-text-color', styles.itemTextColor || 'white');
-            document.documentElement.style.setProperty('--qr-title-color', styles.titleColor || '#ccc');
-            document.documentElement.style.setProperty('--qr-title-border-color', styles.titleBorderColor || '#444');
-            document.documentElement.style.setProperty('--qr-empty-text-color', styles.emptyTextColor || '#666');
-            document.documentElement.style.setProperty('--qr-menu-bg-color', styles.menuBgColor || 'rgba(0, 0, 0, 0.85)');
-            document.documentElement.style.setProperty('--qr-menu-border-color', styles.menuBorderColor || '#555');
-        }
-    }
-}
-
-/**
- * 应用主题样式到菜单
- */
-export function applyThemeToMenu() {
     const menu = document.getElementById(Constants.ID_MENU);
     if (!menu) return;
     
-    // 获取主界面的样式参考元素
-    const refElement = document.querySelector('.conversation_template, #chat-container, body');
-    if (!refElement) return;
-    
-    const refStyle = window.getComputedStyle(refElement);
-    const btnElement = document.querySelector('#send_but, .menu_button');
-    const inputElement = document.querySelector('textarea, input[type="text"]');
-    
-    // 获取计算后的样式
-    const bgColor = refStyle.backgroundColor;
-    const textColor = refStyle.color;
-    const borderColor = btnElement ? window.getComputedStyle(btnElement).borderColor : '#444';
-    
-    // 获取元素背景色
-    const elementBgColor = btnElement ? window.getComputedStyle(btnElement).backgroundColor : 'rgba(60, 60, 60, 0.7)';
-    const inputBgColor = inputElement ? window.getComputedStyle(inputElement).backgroundColor : elementBgColor;
-    
-    // 直接应用到菜单元素上
-    menu.style.backgroundColor = adjustColor(bgColor, 0.95); // 稍暗一点的背景
-    menu.style.borderColor = borderColor;
-    menu.style.color = textColor;
-    
-    // 应用到菜单项
-    const items = menu.querySelectorAll('.quick-reply-item');
-    items.forEach(item => {
-        item.style.backgroundColor = elementBgColor;
-        item.style.color = textColor;
-    });
-    
-    // 应用到标题
-    const titles = menu.querySelectorAll('.quick-reply-list-title');
-    titles.forEach(title => {
-        title.style.color = textColor;
-        title.style.borderBottomColor = borderColor;
-    });
-    
-    // 应用到空提示
-    const emptyTexts = menu.querySelectorAll('.quick-reply-empty');
-    emptyTexts.forEach(text => {
-        text.style.color = adjustColor(textColor, 0.7); // 稍淡的文字颜色
-    });
-    
-    // 应用到列表容器
-    const lists = menu.querySelectorAll('.quick-reply-list');
-    lists.forEach(list => {
-        list.style.borderColor = borderColor;
-    });
-}
-
-/**
- * 辅助函数 - 调整颜色亮度
- */
-function adjustColor(color, factor) {
-    if (!color || !color.startsWith('rgb')) return color;
-    const parts = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([0-9.]+))?\)/);
-    if (!parts) return color;
-    
-    let r = parseInt(parts[1]);
-    let g = parseInt(parts[2]);
-    let b = parseInt(parts[3]);
-    const a = parts[4] ? parseFloat(parts[4]) : 1;
-    
-    // 调整RGB值
-    r = Math.max(0, Math.min(255, r * factor));
-    g = Math.max(0, Math.min(255, g * factor));
-    b = Math.max(0, Math.min(255, b * factor));
-    
-    return `rgba(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)}, ${a})`;
+    // 如果启用了跟随主题
+    if (styles.followTheme) {
+        // 移除所有自定义样式类
+        menu.classList.remove('custom-styled-menu');
+        
+        // 从body或html获取主题相关的类
+        const themeClasses = [];
+        
+        // 收集body上的类名
+        document.body.classList.forEach(className => {
+            // 过滤出很可能是主题相关的类名
+            if (className.includes('theme') || 
+                className.includes('dark') || 
+                className.includes('light') ||
+                className.endsWith('-ui') ||
+                className.includes('style')) {
+                themeClasses.push(className);
+            }
+        });
+        
+        // 添加这些类到菜单
+        themeClasses.forEach(cls => menu.classList.add(cls));
+        
+        // 添加一个特殊标记类，表示跟随主题
+        menu.classList.add('follow-system-theme');
+        
+        // 清除可能存在的内联样式
+        menu.style = '';
+        menu.querySelectorAll('.quick-reply-item, .quick-reply-list-title, .quick-reply-empty, .quick-reply-list')
+            .forEach(el => { el.style = ''; });
+            
+        // 清除CSS变量
+        document.documentElement.style.removeProperty('--qr-item-bg-color');
+        document.documentElement.style.removeProperty('--qr-item-text-color');
+        document.documentElement.style.removeProperty('--qr-title-color');
+        document.documentElement.style.removeProperty('--qr-title-border-color');
+        document.documentElement.style.removeProperty('--qr-empty-text-color');
+        document.documentElement.style.removeProperty('--qr-menu-bg-color');
+        document.documentElement.style.removeProperty('--qr-menu-border-color');
+    } else {
+        // 移除主题相关的类
+        Array.from(menu.classList)
+            .filter(cls => cls !== Constants.ID_MENU)
+            .forEach(cls => menu.classList.remove(cls));
+        
+        // 添加自定义样式类    
+        menu.classList.add('custom-styled-menu');
+        
+        // 应用自定义样式
+        document.documentElement.style.setProperty('--qr-item-bg-color', styles.itemBgColor || 'rgba(60, 60, 60, 0.7)');
+        document.documentElement.style.setProperty('--qr-item-text-color', styles.itemTextColor || 'white');
+        document.documentElement.style.setProperty('--qr-title-color', styles.titleColor || '#ccc');
+        document.documentElement.style.setProperty('--qr-title-border-color', styles.titleBorderColor || '#444');
+        document.documentElement.style.setProperty('--qr-empty-text-color', styles.emptyTextColor || '#666');
+        document.documentElement.style.setProperty('--qr-menu-bg-color', styles.menuBgColor || 'rgba(0, 0, 0, 0.85)');
+        document.documentElement.style.setProperty('--qr-menu-border-color', styles.menuBorderColor || '#555');
+    }
 }
 
 /**
