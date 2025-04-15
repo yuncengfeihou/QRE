@@ -93,7 +93,7 @@ function updateIconDisplay() {
 export function createSettingsHtml() {
     // 菜单样式设置面板
     const stylePanel = `
-    <div id="${Constants.ID_MENU_STYLE_PANEL}" class="inline-drawer-content">
+    <div id="${Constants.ID_MENU_STYLE_PANEL}" style="display:none;" class="inline-drawer-content">
         <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
             <h3>菜单样式设置</h3>
             <button class="menu_button" id="${Constants.ID_MENU_STYLE_PANEL}-close" style="padding:0 10px;">
@@ -106,7 +106,7 @@ export function createSettingsHtml() {
             <div class="quick-reply-settings-row">
                 <label>菜单项背景:</label>
                 <input type="color" id="qr-item-bgcolor-picker" class="qr-color-picker">
-                <div class="opacity-slider-container">
+                <div class="slider-container">
                     <input type="range" id="qr-item-opacity" min="0" max="1" step="0.1" value="0.7" class="qr-opacity-slider">
                     <span id="qr-item-opacity-value" class="opacity-value">0.7</span>
                 </div>
@@ -142,7 +142,7 @@ export function createSettingsHtml() {
             <div class="quick-reply-settings-row">
                 <label>菜单背景:</label>
                 <input type="color" id="qr-menu-bgcolor-picker" class="qr-color-picker">
-                <div class="opacity-slider-container">
+                <div class="slider-container">
                     <input type="range" id="qr-menu-opacity" min="0" max="1" step="0.1" value="0.85" class="qr-opacity-slider">
                     <span id="qr-menu-opacity-value" class="opacity-value">0.85</span>
                 </div>
