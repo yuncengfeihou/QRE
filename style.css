@@ -205,6 +205,44 @@
     border-radius: 5px;
 }
 
+/* 菜单样式设置面板 */
+.quick-reply-style-group {
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #333;
+}
+
+.quick-reply-style-group h4 {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #ccc;
+}
+
+.qr-color-picker {
+    width: 40px;
+    height: 25px;
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.qr-opacity-slider {
+    width: 100px;
+    margin: 0 10px;
+}
+
+/* 将菜单样式的CSS变量设置添加到:root，这样可以被其他元素继承 */
+:root {
+    --qr-item-bg-color: rgba(60, 60, 60, 0.7);
+    --qr-item-text-color: white;
+    --qr-title-color: #ccc;
+    --qr-title-border-color: #444;
+    --qr-empty-text-color: #666;
+    --qr-menu-bg-color: rgba(0, 0, 0, 0.85);
+    --qr-menu-border-color: #555;
+}
+
 /* 跟随主题样式 */
 #quick-reply-menu.follow-theme {
     background-color: var(--background-color, var(--SmartThemeDarkColor, rgba(0, 0, 0, 0.85))) !important;
