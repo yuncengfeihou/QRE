@@ -3,7 +3,6 @@ import { extension_settings } from "./index.js";
 import * as Constants from './constants.js';
 import { sharedState, setMenuVisible } from './state.js';
 import { updateMenuVisibilityUI } from './ui.js';
-import { updateMenuStylesUI } from './events.js';
 
 // 在settings.js中添加自己的updateIconDisplay实现，避免循环依赖
 function updateIconDisplay() {
@@ -150,13 +149,6 @@ export function createSettingsHtml() {
                 <label>菜单边框:</label>
                 <input type="color" id="qr-menu-border-picker" class="qr-color-picker">
             </div>
-        </div>
-        
-        <div class="quick-reply-settings-row" style="margin-top:15px;">
-            <label>
-                <input type="checkbox" id="${Constants.ID_FOLLOW_THEME_CHECKBOX}"> 
-                跟随主题样式
-            </label>
         </div>
         
         <div style="display:flex; justify-content:space-between; margin-top:20px;">
@@ -425,7 +417,6 @@ function saveSettings() {
         return true;
     }
 }
-
 /**
  * 设置事件监听器
  */
@@ -448,11 +439,6 @@ export function setupSettingsEventListeners() {
                 updateIconPreview(Constants.ICON_TYPES.CUSTOM);
             }
             updateIconDisplay();
-            
-            // 更新菜单样式
-            if (typeof updateMenuStylesUI === 'function') {
-                updateMenuStylesUI();
-            }
             
             // 显示保存成功的临时提示
             saveButton.innerHTML = '<i class="fa-solid fa-check"></i> 已保存';
@@ -521,14 +507,6 @@ export function loadAndApplySettings() {
 
     // 更新图标显示
     updateIconDisplay();
-    
-    // 应用菜单样式
-    if (typeof updateMenuStylesUI === 'function' && settings.menuStyles) {
-        updateMenuStylesUI();
-    } else if (!settings.menuStyles) {
-        // 如果没有样式设置，则创建默认值
-        settings.menuStyles = JSON.parse(JSON.stringify(Constants.DEFAULT_MENU_STYLES));
-    }
 
     console.log(`[${Constants.EXTENSION_NAME}] Settings loaded and applied.`);
 }
