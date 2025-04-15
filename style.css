@@ -57,6 +57,13 @@
     min-width: 100px;
 }
 
+/* 调整图标类型下拉框宽度 */
+#quick-reply-menu-icon-type {
+    width: 120px !important;
+    max-width: 120px !important;
+}
+
+/* 修改图标预览样式 */
 .quick-reply-icon-preview {
     display: flex;
     align-items: center;
@@ -65,7 +72,34 @@
     height: 30px;
     background-color: rgba(0, 0, 0, 0.3);
     border-radius: 4px;
-    margin-left: 10px;
+    margin-left: 5px;
+    flex-shrink: 0;
+}
+
+/* 调整复选框和标签位置 */
+#quick-reply-menu-color-match-checkbox {
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+/* 调整复选框容器样式 */
+.quick-reply-settings-row:has(#quick-reply-menu-color-match-checkbox) {
+    display: flex;
+    align-items: center;
+}
+
+.quick-reply-settings-row:has(#quick-reply-menu-color-match-checkbox) label {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    margin: 0;
+}
+
+/* 调整按钮容器位置 */
+.quick-reply-settings-row:has(#quick-reply-menu-menu-style-button) {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
 }
 
 .custom-icon-container {
@@ -273,13 +307,27 @@
         flex-wrap: wrap;
     }
     
+    /* 针对移动设备优化图标类型和预览的布局 */
+    .quick-reply-settings-row:has(#quick-reply-menu-icon-type) {
+        flex-wrap: nowrap;
+    }
+    
     .quick-reply-settings-row > label {
         width: 100%;
         margin-bottom: 5px;
     }
     
-    .color-picker-container, .slider-container {
-        margin-left: 0;
+    /* 针对移动设备优化自定义图标输入框 */
+    .custom-icon-container > div {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        width: 100%;
+    }
+    
+    .custom-icon-container button {
+        margin-top: 5px;
+        width: 100% !important;
     }
     
     /* 确保滑动条容器不换行 */
@@ -297,59 +345,4 @@
     --qr-empty-text-color: #666;
     --qr-menu-bg-color: rgba(0, 0, 0, 0.85);
     --qr-menu-border-color: #555;
-}
-
-/* 增强移动端适配 */
-@media screen and (max-width: 768px) {
-    .flex-container {
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 5px;
-    }
-    
-    .flex-container label {
-        min-width: 80px;
-    }
-    
-    #quick-reply-menu-icon-type {
-        width: 100px;
-    }
-    
-    .quick-reply-icon-preview {
-        margin-left: 5px;
-    }
-    
-    .custom-icon-container > div {
-        flex-direction: column;
-    }
-    
-    .custom-icon-container button {
-        margin-top: 5px;
-        width: 100% !important;
-    }
-}
-
-/* 桌面端共享样式 */
-.flex-container {
-    display: flex;
-    align-items: center;
-    flex-wrap: nowrap;
-    gap: 5px;
-}
-
-.flexGap5 {
-    gap: 5px;
-}
-
-/* 优化图标预览样式 */
-.quick-reply-icon-preview {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 30px;
-    height: 30px;
-    background-color: rgba(0, 0, 0, 0.3);
-    border-radius: 4px;
-    margin-left: 5px;
 }
