@@ -251,22 +251,21 @@ export function setupEventListeners() {
         colorMatchCheckbox
     } = sharedState.domElements;
 
+    // 基本按钮和菜单事件监听
     rocketButton?.addEventListener('click', handleRocketButtonClick);
     document.addEventListener('click', handleOutsideClick);
 
-    // Settings listeners
+    // 设置相关监听器
     settingsDropdown?.addEventListener('change', handleSettingsChange);
-    
-    // 新增图标设置相关监听器
     iconTypeDropdown?.addEventListener('change', handleSettingsChange);
     customIconUrl?.addEventListener('input', handleSettingsChange);
     colorMatchCheckbox?.addEventListener('change', handleSettingsChange);
     
-    // 添加菜单样式按钮监听器
+    // 菜单样式按钮监听器
     const menuStyleButton = document.getElementById(Constants.ID_MENU_STYLE_BUTTON);
     menuStyleButton?.addEventListener('click', handleMenuStyleButtonClick);
     
-    // 添加菜单样式面板相关监听器
+    // 菜单样式面板相关监听器
     const closeButton = document.getElementById(`${Constants.ID_MENU_STYLE_PANEL}-close`);
     closeButton?.addEventListener('click', closeMenuStylePanel);
     
@@ -276,7 +275,7 @@ export function setupEventListeners() {
     const resetButton = document.getElementById(Constants.ID_RESET_STYLE_BUTTON);
     resetButton?.addEventListener('click', resetMenuStyles);
     
-    // 添加不透明度滑块变化监听器
+    // 不透明度滑块监听器
     const itemOpacitySlider = document.getElementById('qr-item-opacity');
     itemOpacitySlider?.addEventListener('input', function() {
         document.getElementById('qr-item-opacity-value').textContent = this.value;
@@ -286,4 +285,99 @@ export function setupEventListeners() {
     menuOpacitySlider?.addEventListener('input', function() {
         document.getElementById('qr-menu-opacity-value').textContent = this.value;
     });
+
+    // 颜色选择器同步功能
+    const colorPickers = [
+        { picker: 'qr-item-bgcolor-picker', text: 'qr-item-bgcolor-text' },
+        { picker: 'qr-item-color-picker', text: 'qr-item-color-text' },
+        { picker: 'qr-title-color-picker', text: 'qr-title-color-text' },
+        { picker: 'qr-title-border-picker', text: 'qr-title-border-text' },
+        { picker: 'qr-empty-color-picker', text: 'qr-empty-color-text' },
+        { picker: 'qr-menu-bgcolor-picker', text: 'qr-menu-bgcolor-text' },
+        { picker: 'qr-menu-border-picker', text: 'qr-menu-border-text' }
+    ];
+
+    colorPickers.forEach(({ picker, text }) => {
+        const pickerElement = document.getElementById(picker);
+        const textElement = document.getElementById(text);
+        
+        if (pickerElement && textElement) {
+            // 颜色选择器改变时更新文本输入框
+            pickerElement.addEventListener('input', (e) => {
+                textElement.value = e.target.value.toUpperCase();
+            });
+
+            pickerElement.addEventListener('change', (e) => {
+                textElement.value = e.target.value.toUpperCase();
+            });
+
+            // 文本输入框改变时更新颜色选择器
+            textElement.addEventListener('input', (e) => {
+                let color = e.target.value;
+                // 添加#前缀如果用户没有输入
+                if (color.charAt(0) !== '#') {
+                    color = '#' + color;
+                }
+                // 验证颜色代码格式
+                if (/^#[0-9A-Fa-f]{6}$/.test(color)) {
+                    pickerElement.value = color;
+                    // 触发颜色选择器的change事件以更新预览
+                    pickerElement.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            });
+
+            // 文本输入框失去焦点时格式化
+            textElement.addEventListener('blur', (e) => {
+                let color = e.target.value;
+                if (color.charAt(0) !== '#') {
+                    color = '#' + color;
+                }
+                // 如果是有效的颜色代码，格式化为大写
+                if (/^#[0-9A-Fa-f]{6}$/.test(color)) {
+                    e.target.value = color.toUpperCase();
+                } else {
+                    // 如果是无效的颜色代码，重置为颜色选择器的当前值
+                    e.target.value = pickerElement.value.toUpperCase();
+                }
+            });
+
+            // 初始化文本输入框的值
+            textElement.value = pickerElement.value.toUpperCase();
+        }
+    });
+
+    // 文件上传监听器
+    const fileInput = document.getElementById('icon-file-upload');
+    if (fileInput) {
+        fileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const customIconUrl = document.getElementById(Constants.ID_CUSTOM_ICON_URL);
+                if (customIconUrl) {
+                    customIconUrl.value = e.target.result;
+                    
+                    // 更新设置
+                    const settings = extension_settings[Constants.EXTENSION_NAME];
+                    settings.customIconUrl = e.target.result;
+                    
+                    // 更新预览
+                    if (settings.iconType === Constants.ICON_TYPES.CUSTOM) {
+                        updateIconPreview(Constants.ICON_TYPES.CUSTOM);
+                    }
+                    
+                    // 更新图标显示
+                    updateIconDisplay();
+                    
+                    // 保存设置
+                    if (typeof context !== 'undefined' && context.saveExtensionSettings) {
+                        context.saveExtensionSettings();
+                    }
+                }
+            };
+            reader.readAsDataURL(file);
+        });
+    }
 }
