@@ -193,8 +193,18 @@ export function createSettingsHtml() {
                 <div class="inline-drawer-icon fa-solid fa-circle-chevron-down"></div>
             </div>
             <div class="inline-drawer-content">
-                <p>此插件隐藏了原有的快捷回复栏，并创建了一个新的快速回复菜单。</p>
-                <p>点击发送按钮旁边的图标可以打开或关闭菜单。</p>
+                <!-- 将说明文字放入可折叠区域 -->
+                <div class="inline-drawer">
+                    <div class="inline-drawer-toggle inline-drawer-header">
+                        <b>使用说明</b>
+                        <div class="inline-drawer-icon fa-solid fa-circle-chevron-down"></div>
+                    </div>
+                    <div class="inline-drawer-content">
+                        <p>此插件隐藏了原有的快捷回复栏，并创建了一个新的快速回复菜单。</p>
+                        <p>点击发送按钮旁边的图标可以打开或关闭菜单。</p>
+                    </div>
+                </div>
+                
                 <div class="flex-container flexGap5">
                     <label for="${Constants.ID_SETTINGS_ENABLED_DROPDOWN}">插件状态:</label>
                     <select id="${Constants.ID_SETTINGS_ENABLED_DROPDOWN}" class="text_pole">
@@ -204,16 +214,17 @@ export function createSettingsHtml() {
                 </div>
                 
                 <hr class="sysHR">
-                <div class="${Constants.CLASS_SETTINGS_ROW}">
-                    <label for="${Constants.ID_ICON_TYPE_DROPDOWN}">图标类型:</label>
-                    <select id="${Constants.ID_ICON_TYPE_DROPDOWN}" class="text_pole">
+                <!-- 图标类型和预览在同一行 -->
+                <div class="${Constants.CLASS_SETTINGS_ROW}" style="display:flex; align-items:center;">
+                    <label for="${Constants.ID_ICON_TYPE_DROPDOWN}" style="width:80px;">图标类型:</label>
+                    <select id="${Constants.ID_ICON_TYPE_DROPDOWN}" class="text_pole" style="width:120px;">
                         <option value="${Constants.ICON_TYPES.ROCKET}">火箭图标</option>
                         <option value="${Constants.ICON_TYPES.COMMENT}">对话图标</option>
                         <option value="${Constants.ICON_TYPES.STAR}">星星图标</option>
                         <option value="${Constants.ICON_TYPES.BOLT}">闪电图标</option>
                         <option value="${Constants.ICON_TYPES.CUSTOM}">自定义图标</option>
                     </select>
-                    <div class="${Constants.CLASS_ICON_PREVIEW}">
+                    <div class="${Constants.CLASS_ICON_PREVIEW}" style="margin-left:10px;">
                         <i class="fa-solid fa-rocket"></i>
                     </div>
                 </div>
@@ -231,20 +242,24 @@ export function createSettingsHtml() {
                     </div>
                 </div>
                 
-                <div class="${Constants.CLASS_SETTINGS_ROW}">
-                    <label>
-                        <input type="checkbox" id="${Constants.ID_COLOR_MATCH_CHECKBOX}" />
+                <!-- 勾选框和标签在同一行，通过display:flex实现 -->
+                <div class="${Constants.CLASS_SETTINGS_ROW}" style="display:flex; align-items:center;">
+                    <input type="checkbox" id="${Constants.ID_COLOR_MATCH_CHECKBOX}" style="margin-right:5px;" />
+                    <label for="${Constants.ID_COLOR_MATCH_CHECKBOX}">
                         使用与发送按钮相匹配的颜色风格
                     </label>
                 </div>
                 
                 <div class="${Constants.CLASS_SETTINGS_ROW}" style="justify-content: flex-end; margin-top: 15px;">
-                    <button id="${Constants.ID_MENU_STYLE_BUTTON}" class="menu_button" style="margin-right: 10px;">
-                        <i class="fa-solid fa-palette"></i> 菜单样式
-                    </button>
-                    <button id="qr-save-settings" class="menu_button" onclick="window.quickReplyMenu.saveSettings()">
-                        <i class="fa-solid fa-floppy-disk"></i> 保存设置
-                    </button>
+                    <!-- 菜单样式按钮移到最左边 -->
+                    <div style="display:flex; justify-content:space-between; width:100%;">
+                        <button id="${Constants.ID_MENU_STYLE_BUTTON}" class="menu_button">
+                            <i class="fa-solid fa-palette"></i> 菜单样式
+                        </button>
+                        <button id="qr-save-settings" class="menu_button" onclick="window.quickReplyMenu.saveSettings()">
+                            <i class="fa-solid fa-floppy-disk"></i> 保存设置
+                        </button>
+                    </div>
                 </div>
                 
                 <hr class="sysHR">
