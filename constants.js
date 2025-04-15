@@ -16,6 +16,11 @@ export const ID_ICON_TYPE_DROPDOWN = `${EXTENSION_NAME}-icon-type`;
 export const ID_CUSTOM_ICON_URL = `${EXTENSION_NAME}-custom-icon-url`;
 export const ID_COLOR_MATCH_CHECKBOX = `${EXTENSION_NAME}-color-match`;
 
+// --- 菜单样式相关常量 ---
+export const ID_MENU_STYLE_BUTTON = `${EXTENSION_NAME}-menu-style-button`;
+export const ID_MENU_STYLE_PANEL = `${EXTENSION_NAME}-menu-style-panel`;
+export const ID_RESET_STYLE_BUTTON = `${EXTENSION_NAME}-reset-style`;
+
 // --- CSS Classes ---
 export const CLASS_MENU_CONTAINER = 'quick-reply-menu-container';
 export const CLASS_LIST = 'quick-reply-list';
@@ -48,14 +53,7 @@ export const ICON_CLASS_MAP = {
     [ICON_TYPES.CUSTOM]: ''  // 自定义图标不使用FontAwesome类
 };
 
-
-// 新增常量用于菜单样式功能
-export const ID_MENU_STYLE_BUTTON = `${EXTENSION_NAME}-menu-style-button`;
-export const ID_MENU_STYLE_PANEL = `${EXTENSION_NAME}-menu-style-panel`;
-export const ID_FOLLOW_THEME_CHECKBOX = `${EXTENSION_NAME}-follow-theme`;
-export const ID_RESET_STYLE_BUTTON = `${EXTENSION_NAME}-reset-style`;
-
-// 默认菜单样式值
+// --- 默认菜单样式值 ---
 export const DEFAULT_MENU_STYLES = {
     itemBgColor: 'rgba(60, 60, 60, 0.7)',
     itemTextColor: '#ffffff',
@@ -63,6 +61,5 @@ export const DEFAULT_MENU_STYLES = {
     titleBorderColor: '#444444',
     emptyTextColor: '#666666',
     menuBgColor: 'rgba(0, 0, 0, 0.85)',
-    menuBorderColor: '#555555',
-    followTheme: false
+    menuBorderColor: '#555555'
 };
