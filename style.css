@@ -27,51 +27,6 @@
     color: var(--button-text-active-color, #55aaff); /* 使用变量或默认为蓝色 */
 }
 
-#quick-reply-rocket-button.custom-icon {
-    background-size: 20px 20px;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-/* 设置相关样式 */
-.quick-reply-settings-row {
-    display: flex;
-    align-items: center;
-    margin: 10px 0;
-    gap: 10px;
-}
-
-.quick-reply-settings-row label {
-    min-width: 100px;
-}
-
-.quick-reply-icon-preview {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 30px;
-    height: 30px;
-    background-color: rgba(0, 0, 0, 0.3);
-    border-radius: 4px;
-    margin-left: 10px;
-}
-
-.quick-reply-icon-preview.custom-preview {
-    background-size: 20px 20px;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-.custom-icon-container {
-    display: flex;
-    align-items: center;
-    margin-top: 5px;
-}
-
-.custom-icon-container input {
-    flex-grow: 1;
-}
-
 /* 菜单样式设置面板 */
 .quick-reply-style-group {
     margin-bottom: 15px;
@@ -99,14 +54,7 @@
     margin: 0 10px;
 }
 
-#qr-menu-style-preview {
-    margin-top: 15px;
-    border: 1px dashed #444;
-    padding: 10px;
-    border-radius: 5px;
-}
-
-/* 快速回复菜单容器 - 基本定位 */
+/* 快速回复菜单容器 - 基本布局 */
 #quick-reply-menu {
     display: none;
     position: fixed;
@@ -119,21 +67,6 @@
     width: 600px;
     max-width: 80vw;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    transition: background-color 0.3s, border-color 0.3s;
-}
-
-/* 自定义样式容器 */
-#quick-reply-menu.custom-styled-menu {
-    background-color: var(--qr-menu-bg-color, rgba(0, 0, 0, 0.85));
-    border: 1px solid var(--qr-menu-border-color, #555);
-}
-
-/* 跟随主题时，快速回复菜单继承宿主应用样式 */
-#quick-reply-menu.follow-system-theme {
-    /* 样式将从宿主应用继承 */
-    background-color: var(--background-color, var(--ui-background-color, var(--SmartThemeDarkColor, rgba(0, 0, 0, 0.85))));
-    border-color: var(--border-color, var(--ui-border-color, var(--SmartThemeBorderColor, #555)));
-    color: var(--text-color, var(--ui-text-color, var(--SmartThemeTextColor, white)));
 }
 
 /* 菜单布局 */
@@ -143,102 +76,12 @@
     gap: 10px;
 }
 
-/* 左右容器基本样式 */
+/* 左右容器共有样式 */
 .quick-reply-list {
     width: 48%;
     padding: 8px;
     max-height: 300px;
     overflow-y: auto;
-}
-
-/* 自定义样式时的列表样式 */
-#quick-reply-menu.custom-styled-menu .quick-reply-list {
-    border: 1px solid var(--qr-title-border-color, #444);
-    border-radius: 5px;
-}
-
-/* 跟随主题时的列表样式 */
-#quick-reply-menu.follow-system-theme .quick-reply-list {
-    border: 1px solid var(--border-color, var(--ui-border-color, var(--SmartThemeBorderColor, #444)));
-    border-radius: 5px;
-}
-
-/* 标题样式 - 自定义 */
-#quick-reply-menu.custom-styled-menu .quick-reply-list-title {
-    text-align: center;
-    color: var(--qr-title-color, #ccc);
-    font-size: 14px;
-    margin-bottom: 8px;
-    padding-bottom: 5px;
-    border-bottom: 1px solid var(--qr-title-border-color, #444);
-    transition: color 0.3s, border-bottom-color 0.3s;
-}
-
-/* 标题样式 - 跟随主题 */
-#quick-reply-menu.follow-system-theme .quick-reply-list-title {
-    text-align: center;
-    color: var(--text-color, var(--SmartThemeTextColor, #ccc));
-    font-size: 14px;
-    margin-bottom: 8px;
-    padding-bottom: 5px;
-    border-bottom: 1px solid var(--border-color, var(--SmartThemeBorderColor, #444));
-    transition: color 0.3s, border-bottom-color 0.3s;
-}
-
-/* 菜单项基本样式 */
-.quick-reply-item {
-    display: block;
-    width: 100%;
-    padding: 5px 8px;
-    margin: 4px 0;
-    text-align: center;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    border: none;
-}
-
-/* 快捷回复项样式 - 自定义 */
-#quick-reply-menu.custom-styled-menu .quick-reply-item {
-    background-color: var(--qr-item-bg-color, rgba(60, 60, 60, 0.7));
-    color: var(--qr-item-text-color, white);
-}
-
-/* 快捷回复项样式 - 跟随主题 */
-#quick-reply-menu.follow-system-theme .quick-reply-item {
-    background-color: var(--background-color2, var(--ui-button-color, var(--SmartThemeElementColor, rgba(60, 60, 60, 0.7))));
-    color: var(--text-color, var(--ui-text-color, var(--SmartThemeTextColor, white)));
-}
-
-/* 悬停效果 - 自定义 */
-#quick-reply-menu.custom-styled-menu .quick-reply-item:hover {
-    background-color: rgba(100, 100, 100, 0.9);
-}
-
-/* 悬停效果 - 跟随主题 */
-#quick-reply-menu.follow-system-theme .quick-reply-item:hover {
-    background-color: var(--background-color3, var(--ui-button-hover-color, var(--SmartThemeElementHoverColor, rgba(100, 100, 100, 0.9))));
-}
-
-/* 空列表提示基本样式 */
-.quick-reply-empty {
-    text-align: center;
-    padding: 10px;
-    font-style: italic;
-    font-size: 12px;
-}
-
-/* 空列表提示 - 自定义 */
-#quick-reply-menu.custom-styled-menu .quick-reply-empty {
-    color: var(--qr-empty-text-color, #666);
-}
-
-/* 空列表提示 - 跟随主题 */
-#quick-reply-menu.follow-system-theme .quick-reply-empty {
-    color: var(--text-color2, var(--ui-secondary-text-color, var(--SmartThemeSecondaryTextColor, #666)));
 }
 
 /* 滚动条样式 */
@@ -258,4 +101,160 @@
 
 .quick-reply-list::-webkit-scrollbar-thumb:hover {
     background: rgba(120, 120, 120, 0.7);
+}
+
+/* 自定义样式模式 */
+#quick-reply-menu.custom-styled-menu {
+    background-color: var(--qr-menu-bg-color, rgba(0, 0, 0, 0.85));
+    border: 1px solid var(--qr-menu-border-color, #555);
+}
+
+#quick-reply-menu.custom-styled-menu .quick-reply-list {
+    border: 1px solid var(--qr-title-border-color, #444);
+    border-radius: 5px;
+}
+
+#quick-reply-menu.custom-styled-menu .quick-reply-list-title {
+    text-align: center;
+    color: var(--qr-title-color, #ccc);
+    font-size: 14px;
+    margin-bottom: 8px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid var(--qr-title-border-color, #444);
+}
+
+#quick-reply-menu.custom-styled-menu .quick-reply-item {
+    display: block;
+    width: 100%;
+    padding: 5px 8px;
+    margin: 4px 0;
+    background-color: var(--qr-item-bg-color, rgba(60, 60, 60, 0.7));
+    color: var(--qr-item-text-color, white);
+    text-align: center;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border: none;
+}
+
+#quick-reply-menu.custom-styled-menu .quick-reply-item:hover {
+    background-color: rgba(100, 100, 100, 0.9);
+}
+
+#quick-reply-menu.custom-styled-menu .quick-reply-empty {
+    color: var(--qr-empty-text-color, #666);
+    text-align: center;
+    padding: 10px;
+    font-style: italic;
+    font-size: 12px;
+}
+
+/* 继承主题模式 */
+#quick-reply-menu.inherit-host-theme {
+    /* 重置所有基础样式，完全依赖宿主应用样式 */
+    background-color: inherit !important;
+    color: inherit !important;
+    border: 1px solid !important;
+    border-color: inherit !important;
+}
+
+/* 对快捷回复列表应用宿主应用的样式 */
+#quick-reply-menu.inherit-host-theme .quick-reply-list {
+    background-color: inherit !important;
+    color: inherit !important;
+    border: 1px solid !important;
+    border-color: inherit !important;
+    padding: 8px !important;
+    margin: 0 !important;
+}
+
+/* 对标题应用宿主应用的标题样式 */
+#quick-reply-menu.inherit-host-theme .quick-reply-list-title {
+    color: inherit !important;
+    border-bottom: 1px solid !important;
+    border-color: inherit !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    margin-bottom: 8px !important;
+    padding-bottom: 5px !important;
+}
+
+/* 对按钮应用宿主应用的按钮样式 */
+#quick-reply-menu.inherit-host-theme .quick-reply-item {
+    display: block !important;
+    width: 100% !important;
+    padding: 5px 8px !important;
+    margin: 4px 0 !important;
+    text-align: center !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    background-color: inherit !important;
+    color: inherit !important;
+    border: inherit !important;
+}
+
+/* 对空提示应用宿主应用的次要文本样式 */
+#quick-reply-menu.inherit-host-theme .quick-reply-empty {
+    color: inherit !important;
+    opacity: 0.6 !important;
+    text-align: center !important;
+    padding: 10px !important;
+    font-style: italic !important;
+    font-size: 12px !important;
+}
+
+/* 自定义图标支持 */
+#quick-reply-rocket-button.custom-icon {
+    background-size: 20px 20px;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.quick-reply-icon-preview.custom-preview {
+    background-size: 20px 20px;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* 设置面板中的样式预览 */
+#qr-menu-style-preview {
+    margin-top: 15px;
+    border: 1px dashed #444;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* 确保菜单样式设置面板的样式 */
+#quick-reply-menu-style-panel {
+    background-color: var(--SmartThemeDarkColor, #0f0f0f) !important;
+    color: var(--SmartThemeTextColor, #fff) !important;
+    border: 1px solid var(--SmartThemeBorderColor, #444) !important;
+}
+
+/* 确保颜色选择器在暗色主题下可见 */
+.qr-color-picker::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.qr-color-picker::-webkit-color-swatch {
+    border: none;
+    border-radius: 4px;
+}
+
+/* 确保不透明度滑块在暗色主题下可见 */
+.qr-opacity-slider {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+/* 禁用状态的控件样式 */
+.qr-color-picker:disabled,
+.qr-opacity-slider:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
