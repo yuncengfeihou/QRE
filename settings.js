@@ -378,17 +378,59 @@ function handleFileUpload(event) {
  * 处理使用说明按钮点击
  */
 export function handleUsageButtonClick() {
-    const usagePanel = document.getElementById('quick-reply-menu-usage-panel');
-    if (usagePanel) {
-        usagePanel.style.display = 'block';
+    // 检查是否已存在使用说明面板
+    let usagePanel = document.getElementById(Constants.ID_USAGE_PANEL);
+    
+    // 如果不存在，则创建面板
+    if (!usagePanel) {
+        usagePanel = document.createElement('div');
+        usagePanel.id = Constants.ID_USAGE_PANEL;
+        usagePanel.className = 'qr-usage-panel';
+        usagePanel.innerHTML = `
+            <div style="margin-bottom:7px;">
+                <h3 style="color: white; font-weight: bold; margin: 0 0 7px 0;">使用说明</h3>
+            </div>
+            
+            <div class="quick-reply-usage-content">
+                <p>此插件隐藏了原有的快捷回复栏，并创建了一个新的快速回复菜单。</p>
+                <p style="margin-bottom:7px;">点击发送按钮旁边的图标可以打开或关闭菜单。</p>
+            </div>
+            
+            <div style="text-align:center; margin-top:10px;">
+                <button class="menu_button" id="${Constants.ID_USAGE_PANEL}-close">
+                    确定
+                </button>
+            </div>
+        `;
+        
+        // 将面板添加到body中
+        document.body.appendChild(usagePanel);
+        
+        // 添加关闭按钮事件监听器
+        const closeButton = document.getElementById(`${Constants.ID_USAGE_PANEL}-close`);
+        if (closeButton) {
+            closeButton.addEventListener('click', closeUsagePanel);
+        }
     }
+    
+    // 显示面板
+    usagePanel.style.display = 'block';
+    
+    // 计算并设置面板位置
+    const windowHeight = window.innerHeight;
+    const panelHeight = usagePanel.offsetHeight;
+    
+    // 计算垂直位置，确保面板完全在可视区域内
+    const topPosition = Math.max(50, windowHeight * 0.3);
+    usagePanel.style.top = `${topPosition}px`;
+    usagePanel.style.transform = 'translateX(-50%)';
 }
 
 /**
  * 关闭使用说明面板
  */
 export function closeUsagePanel() {
-    const usagePanel = document.getElementById('quick-reply-menu-usage-panel');
+    const usagePanel = document.getElementById(Constants.ID_USAGE_PANEL);
     if (usagePanel) {
         usagePanel.style.display = 'none';
     }
