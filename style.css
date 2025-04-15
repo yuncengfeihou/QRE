@@ -172,33 +172,6 @@
 }
 
 /* 菜单样式设置面板 */
-.quick-reply-style-group {
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #333;
-}
-
-.quick-reply-style-group h4 {
-    margin: 5px 0;
-    font-size: 14px;
-    color: #ccc;
-}
-
-.qr-color-picker {
-    width: 40px;
-    height: 25px;
-    border: none;
-    background: none;
-    padding: 0;
-    cursor: pointer;
-}
-
-.qr-opacity-slider {
-    width: 100px;
-    margin: 0 10px;
-}
-
-/* 菜单样式设置面板 - 修复背景透明问题 */
 #quick-reply-menu-menu-style-panel {
     display: none;
     position: fixed;
@@ -212,7 +185,6 @@
     max-width: 90vw;
     max-height: 80vh;
     overflow-y: auto;
-    /* 添加明确的背景色，使用变量或者回退值 */
     background-color: var(--background-color1, #0f0f0f);
     border: 1px solid var(--border-color, #444);
     color: var(--text-color, #fff);
@@ -228,6 +200,77 @@
 .quick-reply-style-group h4,
 .quick-reply-settings-row label {
     color: var(--text-color);
+}
+
+.quick-reply-style-group {
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #333;
+}
+
+.quick-reply-style-group h4 {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+/* 颜色选择器增强样式 */
+.qr-color-picker-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.qr-color-picker {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 40px;
+    height: 25px;
+    padding: 0;
+    border: 1px solid var(--border-color, #444);
+    border-radius: 4px;
+    cursor: pointer;
+    background: none;
+}
+
+.qr-color-text-input {
+    width: 80px;
+    height: 25px;
+    padding: 0 5px;
+    border: 1px solid var(--border-color, #444);
+    border-radius: 4px;
+    background: var(--background-color2, #1f1f1f);
+    color: var(--text-color, #fff);
+    font-family: monospace;
+}
+
+.qr-opacity-slider {
+    width: 100px;
+    margin: 0 10px;
+}
+
+/* 移动设备适配 */
+@media screen and (max-width: 768px) {
+    .qr-color-picker-wrapper {
+        flex-wrap: wrap;
+    }
+    
+    .qr-color-text-input {
+        width: 70px;
+    }
+    
+    .quick-reply-settings-row {
+        flex-wrap: wrap;
+    }
+    
+    .quick-reply-settings-row label {
+        width: 100%;
+        min-width: unset;
+    }
+    
+    .qr-opacity-slider {
+        width: calc(100% - 130px);
+    }
 }
 
 /* 将变量声明添加到:root以确保全局可用 */
