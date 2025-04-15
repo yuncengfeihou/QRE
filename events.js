@@ -172,6 +172,7 @@ export function resetMenuStyles() {
 /**
  * 更新菜单的实际样式
  */
+// 修改events.js中的updateMenuStylesUI函数
 export function updateMenuStylesUI() {
     const settings = extension_settings[Constants.EXTENSION_NAME];
     const styles = settings.menuStyles || Constants.DEFAULT_MENU_STYLES;
@@ -181,85 +182,78 @@ export function updateMenuStylesUI() {
     
     // 如果启用了跟随主题
     if (styles.followTheme) {
-        // 1. 移除所有自定义样式
+        // 移除自定义样式类，添加主题继承类
         menu.classList.remove('custom-styled-menu');
-        menu.classList.add('inherit-host-theme');
+        menu.classList.add('theme-inherit');
         
-        // 2. 直接复制body的所有类到菜单
-        menu.className = 'inherit-host-theme';
-        menu.classList.add(Constants.ID_MENU); // 保留ID对应的类
-        const bodyClasses = Array.from(document.body.classList);
-        bodyClasses.forEach(cls => menu.classList.add(cls));
+        // 获取宿主应用的容器元素作为参考
+        const hostPanel = document.querySelector('.inline-drawer-content, .card, .content');
+        const hostBorder = document.querySelector('.inline-drawer, .card');
+        const hostButton = document.querySelector('.menu_button, .btn-primary');
+        const hostTitle = document.querySelector('.inline-drawer-header h4, .card-header');
         
-        // 3. 给菜单内部元素添加宿主应用正在使用的类
-        // 获取宿主应用常用的类
-        const hostPanelClass = document.querySelector('.inline-drawer, .card, .content') ? 
-            (document.querySelector('.inline-drawer')?.className || 
-             document.querySelector('.card')?.className || 
-             document.querySelector('.content')?.className) : '';
-             
-        const hostButtonClass = document.querySelector('.menu_button, .btn-primary, .btn') ?
-            (document.querySelector('.menu_button')?.className || 
-             document.querySelector('.btn-primary')?.className || 
-             document.querySelector('.btn')?.className) : '';
-             
-        const hostTitleClass = document.querySelector('.inline-drawer-header, h4, .card-header') ?
-            (document.querySelector('.inline-drawer-header')?.className || 
-             document.querySelector('h4')?.className || 
-             document.querySelector('.card-header')?.className) : '';
-        
-        // 应用宿主应用类到菜单元素
-        menu.querySelectorAll('.quick-reply-list').forEach(el => {
-            el.className = 'quick-reply-list';
-            if (hostPanelClass) {
-                hostPanelClass.split(' ').forEach(cls => {
-                    if (cls) el.classList.add(cls);
+        if (hostPanel) {
+            const hostStyle = window.getComputedStyle(hostPanel);
+            
+            // 只复制颜色属性到菜单
+            menu.style.backgroundColor = hostStyle.backgroundColor;
+            menu.style.color = hostStyle.color;
+            
+            if (hostBorder) {
+                const borderStyle = window.getComputedStyle(hostBorder);
+                menu.style.borderColor = borderStyle.borderColor;
+                
+                // 应用到内部容器盒子
+                menu.querySelectorAll('.quick-reply-list').forEach(el => {
+                    el.style.borderColor = borderStyle.borderColor;
+                    el.style.backgroundColor = adjustColor(hostStyle.backgroundColor, 0.95); // 轻微调整以区分嵌套盒子
                 });
             }
-        });
-        
-        menu.querySelectorAll('.quick-reply-item').forEach(el => {
-            el.className = 'quick-reply-item';
-            if (hostButtonClass) {
-                hostButtonClass.split(' ').forEach(cls => {
-                    if (cls) el.classList.add(cls);
+            
+            // 设置标题样式
+            if (hostTitle) {
+                const titleStyle = window.getComputedStyle(hostTitle);
+                menu.querySelectorAll('.quick-reply-list-title').forEach(el => {
+                    el.style.color = titleStyle.color || hostStyle.color;
+                    el.style.borderBottomColor = hostBorder ? window.getComputedStyle(hostBorder).borderColor : '#444';
                 });
             }
-        });
-        
-        menu.querySelectorAll('.quick-reply-list-title').forEach(el => {
-            el.className = 'quick-reply-list-title';
-            if (hostTitleClass) {
-                hostTitleClass.split(' ').forEach(cls => {
-                    if (cls) el.classList.add(cls);
+            
+            // 设置按钮样式
+            if (hostButton) {
+                const buttonStyle = window.getComputedStyle(hostButton);
+                menu.querySelectorAll('.quick-reply-item').forEach(el => {
+                    el.style.backgroundColor = buttonStyle.backgroundColor;
+                    el.style.color = buttonStyle.color;
+                    
+                    // 设置悬停效果（通过CSS变量实现）
+                    document.documentElement.style.setProperty('--theme-button-hover-bg', adjustColor(buttonStyle.backgroundColor, 1.2));
                 });
             }
-        });
-        
-        // 移除CSS变量自定义样式
-        document.documentElement.style.removeProperty('--qr-item-bg-color');
-        document.documentElement.style.removeProperty('--qr-item-text-color');
-        document.documentElement.style.removeProperty('--qr-title-color');
-        document.documentElement.style.removeProperty('--qr-title-border-color');
-        document.documentElement.style.removeProperty('--qr-empty-text-color');
-        document.documentElement.style.removeProperty('--qr-menu-bg-color');
-        document.documentElement.style.removeProperty('--qr-menu-border-color');
+            
+            // 设置空提示文本颜色
+            menu.querySelectorAll('.quick-reply-empty').forEach(el => {
+                el.style.color = adjustColor(hostStyle.color, 0.7); // 稍微淡一点的文字颜色
+            });
+        }
     } else {
         // 恢复自定义样式
-        // 移除所有可能的继承类
-        const originalClass = menu.className;
-        menu.className = '';
-        menu.classList.add(Constants.ID_MENU);
+        menu.classList.remove('theme-inherit');
         menu.classList.add('custom-styled-menu');
         
-        // 恢复菜单内部元素的原始类
-        menu.querySelectorAll('.quick-reply-list, .quick-reply-item, .quick-reply-list-title, .quick-reply-empty').forEach(el => {
-            // 保留第一个类(基本类)，移除其他所有类
-            const baseClass = el.classList[0];
-            el.className = baseClass || '';
+        // 清除直接应用的样式
+        menu.style.backgroundColor = '';
+        menu.style.color = '';
+        menu.style.borderColor = '';
+        
+        menu.querySelectorAll('.quick-reply-list, .quick-reply-list-title, .quick-reply-item, .quick-reply-empty').forEach(el => {
+            el.style.backgroundColor = '';
+            el.style.color = '';
+            el.style.borderColor = '';
+            el.style.borderBottomColor = '';
         });
         
-        // 应用自定义样式
+        // 应用自定义样式变量
         document.documentElement.style.setProperty('--qr-item-bg-color', styles.itemBgColor || 'rgba(60, 60, 60, 0.7)');
         document.documentElement.style.setProperty('--qr-item-text-color', styles.itemTextColor || 'white');
         document.documentElement.style.setProperty('--qr-title-color', styles.titleColor || '#ccc');
@@ -268,6 +262,26 @@ export function updateMenuStylesUI() {
         document.documentElement.style.setProperty('--qr-menu-bg-color', styles.menuBgColor || 'rgba(0, 0, 0, 0.85)');
         document.documentElement.style.setProperty('--qr-menu-border-color', styles.menuBorderColor || '#555');
     }
+}
+
+// 辅助函数 - 调整颜色亮度
+function adjustColor(color, factor) {
+    if (!color || typeof color !== 'string' || !color.startsWith('rgb')) return color;
+    
+    const match = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([0-9.]+))?\)/);
+    if (!match) return color;
+    
+    let r = parseInt(match[1]);
+    let g = parseInt(match[2]);
+    let b = parseInt(match[3]);
+    const a = match[4] ? parseFloat(match[4]) : 1;
+    
+    // 调整亮度
+    r = Math.min(255, Math.max(0, r * factor));
+    g = Math.min(255, Math.max(0, g * factor));
+    b = Math.min(255, Math.max(0, b * factor));
+    
+    return `rgba(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)}, ${a})`;
 }
 
 /**
