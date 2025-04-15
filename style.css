@@ -398,3 +398,9 @@
     min-width: 80px;
     margin: 0 auto;
 }
+
+.menu_button {
+    width: auto !important; 
+    padding: 0 10px !important;
+    white-space: nowrap;
+}
