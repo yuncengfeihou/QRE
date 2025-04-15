@@ -63,14 +63,14 @@
     max-width: 120px !important;
 }
 
-/* 图标预览样式 */
+/* 修改图标预览样式 */
 .quick-reply-icon-preview {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 30px;
     height: 30px;
-    background-color: var(--background-color2, #1f1f1f);
+    background-color: var(--background-color3, #383838);  /* 与下拉菜单一致 */
     border-radius: 4px;
     margin-left: 5px;
     flex-shrink: 0;
