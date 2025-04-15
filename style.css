@@ -63,19 +63,6 @@
     max-width: 120px !important;
 }
 
-/* 修改图标预览样式 */
-.quick-reply-icon-preview {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 30px;
-    height: 30px;
-    background-color: rgba(0, 0, 0, 0.3);
-    border-radius: 4px;
-    margin-left: 5px;
-    flex-shrink: 0;
-}
-
 /* 调整复选框和标签位置 */
 #quick-reply-menu-color-match-checkbox {
     margin-right: 5px;
@@ -194,12 +181,6 @@
 
 /* 自定义图标支持 */
 #quick-reply-rocket-button.custom-icon {
-    background-size: 20px 20px;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-.quick-reply-icon-preview.custom-preview {
     background-size: 20px 20px;
     background-position: center;
     background-repeat: no-repeat;
@@ -403,4 +384,25 @@
     width: auto !important; 
     padding: 0 10px !important;
     white-space: nowrap;
+}
+
+/* 图标预览弹窗内的图标样式 */
+#quick-reply-icon-preview-display {
+    font-size: 24px;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+}
+
+/* 图标预览弹窗中的文本样式 */
+#quick-reply-icon-preview-display span {
+    font-size: 14px;
+    color: var(--text-color, #ccc);
+    text-align: center;
+    max-width: 120px;
 }
