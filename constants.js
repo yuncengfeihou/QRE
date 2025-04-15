@@ -35,6 +35,10 @@ export const ARIA_ROLE_MENU = 'menu';
 export const ARIA_ROLE_GROUP = 'group';
 export const ARIA_ROLE_MENUITEM = 'menuitem';
 
+// --- 使用说明相关常量 ---
+export const ID_USAGE_BUTTON = `${EXTENSION_NAME}-usage-button`;
+export const ID_USAGE_PANEL = `${EXTENSION_NAME}-usage-panel`;
+
 // --- 默认图标选项 ---
 export const ICON_TYPES = {
     ROCKET: 'rocket',
