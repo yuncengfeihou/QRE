@@ -204,9 +204,9 @@ export function createSettingsHtml() {
                 </div>
                 
                 <hr class="sysHR">
-                <div class="${Constants.CLASS_SETTINGS_ROW}">
+                <div class="flex-container flexGap5">
                     <label for="${Constants.ID_ICON_TYPE_DROPDOWN}">图标类型:</label>
-                    <select id="${Constants.ID_ICON_TYPE_DROPDOWN}" class="text_pole">
+                    <select id="${Constants.ID_ICON_TYPE_DROPDOWN}" class="text_pole" style="width:120px;">
                         <option value="${Constants.ICON_TYPES.ROCKET}">火箭图标</option>
                         <option value="${Constants.ICON_TYPES.COMMENT}">对话图标</option>
                         <option value="${Constants.ICON_TYPES.STAR}">星星图标</option>
@@ -218,7 +218,7 @@ export function createSettingsHtml() {
                     </div>
                 </div>
                 
-                <div class="${Constants.CLASS_SETTINGS_ROW} custom-icon-container" style="display: none;">
+                <div class="flex-container flexGap5 custom-icon-container" style="display: none;">
                     <label for="${Constants.ID_CUSTOM_ICON_URL}">自定义图标:</label>
                     <div style="display:flex; flex-grow:1; gap:5px;">
                         <input type="text" id="${Constants.ID_CUSTOM_ICON_URL}" class="text_pole" style="flex-grow:1;"
@@ -231,15 +231,15 @@ export function createSettingsHtml() {
                     </div>
                 </div>
                 
-                <div class="${Constants.CLASS_SETTINGS_ROW}">
-                    <label>
-                        <input type="checkbox" id="${Constants.ID_COLOR_MATCH_CHECKBOX}" />
+                <div class="flex-container flexGap5" style="margin:10px 0;">
+                    <input type="checkbox" id="${Constants.ID_COLOR_MATCH_CHECKBOX}" style="margin-right:5px;" />
+                    <label for="${Constants.ID_COLOR_MATCH_CHECKBOX}">
                         使用与发送按钮相匹配的颜色风格
                     </label>
                 </div>
                 
-                <div class="${Constants.CLASS_SETTINGS_ROW}" style="justify-content: flex-end; margin-top: 15px;">
-                    <button id="${Constants.ID_MENU_STYLE_BUTTON}" class="menu_button" style="margin-right: 10px;">
+                <div class="flex-container" style="justify-content: space-between; margin-top: 15px;">
+                    <button id="${Constants.ID_MENU_STYLE_BUTTON}" class="menu_button">
                         <i class="fa-solid fa-palette"></i> 菜单样式
                     </button>
                     <button id="qr-save-settings" class="menu_button" onclick="window.quickReplyMenu.saveSettings()">
@@ -470,6 +470,18 @@ export function setupSettingsEventListeners() {
                 saveButton.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> 保存设置';
                 saveButton.style.backgroundColor = '';
             }, 2000);
+        });
+    }
+    
+    // 处理自定义图标容器显示逻辑
+    const iconTypeDropdown = document.getElementById(Constants.ID_ICON_TYPE_DROPDOWN);
+    if (iconTypeDropdown) {
+        iconTypeDropdown.addEventListener('change', function() {
+            const customIconContainer = document.querySelector('.custom-icon-container');
+            if (customIconContainer) {
+                customIconContainer.style.display = 
+                    this.value === Constants.ICON_TYPES.CUSTOM ? 'flex' : 'none';
+            }
         });
     }
 }
