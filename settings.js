@@ -96,7 +96,7 @@ export function createSettingsHtml() {
     <div id="${Constants.ID_MENU_STYLE_PANEL}">
         <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
             <h3>菜单样式设置</h3>
-            <button class="menu_button" id="${Constants.ID_MENU_STYLE_PANEL}-close" style="padding:0 10px;">
+            <button class="menu_button" id="${Constants.ID_MENU_STYLE_PANEL}-close" style="width:auto; padding:0 10px;">
                 <i class="fa-solid fa-times"></i>
             </button>
         </div>
@@ -175,10 +175,10 @@ export function createSettingsHtml() {
         </div>
         
         <div style="display:flex; justify-content:space-between; margin-top:20px;">
-            <button class="menu_button" id="${Constants.ID_RESET_STYLE_BUTTON}">
+            <button class="menu_button" id="${Constants.ID_RESET_STYLE_BUTTON}" style="width:auto; padding:0 10px;">
                 <i class="fa-solid fa-rotate-left"></i> 恢复默认
             </button>
-            <button class="menu_button" id="${Constants.ID_MENU_STYLE_PANEL}-apply">
+            <button class="menu_button" id="${Constants.ID_MENU_STYLE_PANEL}-apply" style="width:auto; padding:0 10px;">
                 <i class="fa-solid fa-check"></i> 应用样式
             </button>
         </div>
@@ -198,7 +198,7 @@ export function createSettingsHtml() {
         </div>
         
         <div style="text-align:center; margin-top:10px;">
-            <button class="menu_button" id="${Constants.ID_USAGE_PANEL}-close">
+            <button class="menu_button" id="${Constants.ID_USAGE_PANEL}-close" style="width:auto; padding:0 10px;">
                 确定
             </button>
         </div>
@@ -213,12 +213,6 @@ export function createSettingsHtml() {
                 <div class="inline-drawer-icon fa-solid fa-circle-chevron-down"></div>
             </div>
             <div class="inline-drawer-content">
-                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                    <button id="quick-reply-menu-usage-button" class="menu_button">
-                        <i class="fa-solid fa-circle-info"></i> 使用说明
-                    </button>
-                </div>
-                
                 <div class="flex-container flexGap5">
                     <label for="${Constants.ID_SETTINGS_ENABLED_DROPDOWN}">插件状态:</label>
                     <select id="${Constants.ID_SETTINGS_ENABLED_DROPDOWN}" class="text_pole">
@@ -248,7 +242,7 @@ export function createSettingsHtml() {
                         <input type="text" id="${Constants.ID_CUSTOM_ICON_URL}" class="text_pole" style="flex-grow:1;"
                                placeholder="支持URL、base64编码图片或SVG代码" />
                         <input type="file" id="icon-file-upload" accept="image/*" style="display:none" />
-                        <button class="menu_button" style="width:auto;padding:0 10px;" 
+                        <button class="menu_button" style="width:auto; padding:0 10px;" 
                                 onclick="document.getElementById('icon-file-upload').click()">
                             选择文件
                         </button>
@@ -263,10 +257,13 @@ export function createSettingsHtml() {
                 </div>
                 
                 <div style="display:flex; justify-content:space-between; margin-top:15px;">
-                    <button id="${Constants.ID_MENU_STYLE_BUTTON}" class="menu_button">
+                    <button id="${Constants.ID_MENU_STYLE_BUTTON}" class="menu_button" style="width:auto; padding:0 10px;">
                         <i class="fa-solid fa-palette"></i> 菜单样式
                     </button>
-                    <button id="qr-save-settings" class="menu_button" onclick="window.quickReplyMenu.saveSettings()">
+                    <button id="quick-reply-menu-usage-button" class="menu_button" style="width:auto; padding:0 10px;">
+                        <i class="fa-solid fa-circle-info"></i> 使用说明
+                    </button>
+                    <button id="qr-save-settings" class="menu_button" style="width:auto; padding:0 10px;" onclick="window.quickReplyMenu.saveSettings()">
                         <i class="fa-solid fa-floppy-disk"></i> 保存设置
                     </button>
                 </div>
@@ -397,7 +394,7 @@ export function handleUsageButtonClick() {
             </div>
             
             <div style="text-align:center; margin-top:10px;">
-                <button class="menu_button" id="${Constants.ID_USAGE_PANEL}-close">
+                <button class="menu_button" id="${Constants.ID_USAGE_PANEL}-close" style="width:auto; padding:0 10px;">
                     确定
                 </button>
             </div>
